@@ -1,269 +1,265 @@
 # Exchange 2016 Database Defragmentation Script
 
-Автоматизированный PowerShell скрипт для безопасной дефрагментации баз данных Exchange Server 2016.
+**Languages / Языки:**
+- [🇺🇸 English](README.md) ← (Current)
+- [🇷🇺 Русский](README.ru.md)
 
-## Описание
+---
 
-Скрипт выполняет полную дефрагментацию базы данных Exchange Server 2016 с автоматическими проверками безопасности, логированием и восстановлением служб. Предназначен для освобождения места после удаления или перемещения почтовых ящиков.
+Automated PowerShell script for safe defragmentation of Exchange Server 2016 databases.
 
-## ⚠️ Важные предупреждения
+## Description
 
-- **ОБЯЗАТЕЛЬНО** создайте резервную копию базы данных перед запуском
-- Дефрагментация может занимать несколько часов
-- База данных будет недоступна во время выполнения
-- Требуется свободное место на диске (≥110% от размера БД)
-- Выполняйте в нерабочее время
+This script performs complete defragmentation of Exchange Server 2016 databases with automatic safety checks, logging, and service recovery. It is designed to free up space after deleting or moving mailboxes.
 
-## Установка
+## ⚠️ Important Warnings
 
-1. Скопируйте скрипт в папку:
+- **MANDATORY** create a database backup before running
+- Defragmentation may take several hours
+- Database will be unavailable during execution
+- Requires free disk space (≥110% of database size)
+- Run during non-business hours
+
+## Installation
+
+1. Copy the script to the folder:
    ```
    C:\Scripts\Defrag\ExchangeDefrag.ps1
    ```
 
-2. Настройте параметры в начале скрипта:
+2. Configure parameters at the beginning of the script:
    ```powershell
-   # Имя базы данных для дефрагментации
+   # Database name for defragmentation
    $DatabaseName = "Name-DB"
 
-   # Путь для лог-файла
+   # Log file path
    $LogPath = "C:\Scripts\Defrag\Logs\DefragLog.txt"
 
-   # Принудительное выполнение без подтверждений (True/False)
+   # Force execution without confirmations (True/False)
    $Force = $True
    ```
 
-## Требования
+## Requirements
 
 - Exchange Server 2016
-- PowerShell 5.0 или выше
-- Права администратора Exchange
-- Права локального администратора на сервере
-- Свободное место на диске ≥110% от размера БД
+- PowerShell 5.0 or higher
+- Exchange administrator rights
+- Local administrator rights on server
+- Free disk space ≥110% of database size
 
-## Функциональность
+## Functionality
 
-### Автоматические проверки
+### Automatic Checks
 
-- ✅ Проверка существования базы данных
-- ✅ Проверка свободного места на диске
-- ✅ Проверка активных подключений
-- ✅ Проверка целостности БД после дефрагментации
+- ✅ Check database existence
+- ✅ Check free disk space
+- ✅ Check active connections
+- ✅ Check database integrity after defragmentation
 
-### Безопасность
+### Safety
 
-- ✅ Автоматическая остановка и запуск служб Exchange
-- ✅ Демонтирование и монтирование БД
-- ✅ Восстановление в случае ошибки
-- ✅ Подробное логирование всех операций
+- ✅ Automatic stop and start of Exchange services
+- ✅ Database dismounting and mounting
+- ✅ Recovery in case of errors
+- ✅ Detailed logging of all operations
 
-### Мониторинг
+### Monitoring
 
-- ✅ Детальное логирование с временными метками
-- ✅ Цветной вывод в консоль
-- ✅ Расчет освобожденного места
-- ✅ Измерение времени выполнения
+- ✅ Detailed logging with timestamps
+- ✅ Colored console output
+- ✅ Calculation of freed space
+- ✅ Execution time measurement
 
-## Использование
+## Usage
 
-### Базовый запуск
+### Basic Execution
 
 ```powershell
-# Запуск из Exchange Management Shell
+# Run from Exchange Management Shell
 .\ExchangeDefrag.ps1
 ```
 
-### Запуск с настройками
+### Execution with Settings
 
 ```powershell
-# Изменить параметры в скрипте перед запуском
+# Change parameters in the script before running
 $DatabaseName = "MyDatabase"
 $LogPath = "D:\Logs\DefragLog.txt"
-$Force = $False  # Включить интерактивные подтверждения
+$Force = $False  # Enable interactive confirmations
 ```
 
-### Планирование через Task Scheduler
+### Scheduling via Task Scheduler
 
 ```powershell
-# Создание задачи для запуска в нерабочее время
+# Create task for non-business hours execution
 $action = New-ScheduledTaskAction -Execute 'PowerShell.exe' -Argument '-ExecutionPolicy Bypass -File "C:\Scripts\Defrag\ExchangeDefrag.ps1"'
 $trigger = New-ScheduledTaskTrigger -Weekly -DaysOfWeek Sunday -At 2:00AM
 $settings = New-ScheduledTaskSettingsSet -RunOnlyIfNetworkAvailable -WakeToRun
 Register-ScheduledTask -TaskName "Exchange DB Defrag" -Action $action -Trigger $trigger -Settings $settings -User "DOMAIN\ExchangeAdmin"
 ```
 
-## Процесс выполнения
+## Execution Process
 
-1. **Инициализация**
-   - Загрузка Exchange Management Shell
-   - Создание папки для логов
-   - Проверка параметров
+1. **Initialization**
+   - Load Exchange Management Shell
+   - Create log folder
+   - Check parameters
 
-2. **Предварительные проверки**
-   - Проверка существования БД
-   - Проверка свободного места
-   - Проверка активных подключений
+2. **Pre-checks**
+   - Check database existence
+   - Check free disk space
+   - Check active connections
 
-3. **Подготовка к дефрагментации**
-   - Остановка служб Exchange
-   - Демонтирование БД
-   - Создание резервной копии (рекомендуется)
+3. **Defragmentation Preparation**
+   - Stop Exchange services
+   - Dismount database
+   - Create backup (recommended)
 
-4. **Дефрагментация**
-   - Выполнение `eseutil /d`
-   - Мониторинг прогресса
-   - Обработка ошибок
+4. **Defragmentation**
+   - Execute `eseutil /d`
+   - Monitor progress
+   - Handle errors
 
-5. **Завершение**
-   - Монтирование БД
-   - Запуск служб Exchange
-   - Проверка целостности
-   - Расчет результатов
+5. **Completion**
+   - Mount database
+   - Start Exchange services
+   - Check integrity
+   - Calculate results
 
-## Структура логов
+## Log Structure
 
-Лог-файл содержит детальную информацию о каждом этапе:
+The log file contains detailed information about each stage:
 
 ```
-[2024-01-15 02:00:00] [INFO] ========== НАЧАЛО ДЕФРАГМЕНТАЦИИ БД EXCHANGE ==========
-[2024-01-15 02:00:01] [INFO] База данных: MyDatabase
-[2024-01-15 02:00:02] [INFO] Размер БД до дефрагментации: 25.5 GB
-[2024-01-15 02:00:03] [SUCCESS] Служба MSExchangeIS остановлена
-[2024-01-15 02:00:04] [SUCCESS] База данных демонтирована
-[2024-01-15 02:00:05] [SUCCESS] Начало дефрагментации...
-[2024-01-15 04:30:00] [SUCCESS] Дефрагментация завершена успешно за 150.0 минут
-[2024-01-15 04:30:30] [SUCCESS] Размер БД после дефрагментации: 18.2 GB
-[2024-01-15 04:30:31] [SUCCESS] Освобождено места: 7.3 GB (28.6%)
+[2024-01-15 02:00:00] [INFO] ========== EXCHANGE DB DEFRAGMENTATION START ==========
+[2024-01-15 02:00:01] [INFO] Database: MyDatabase
+[2024-01-15 02:00:02] [INFO] Database size before defragmentation: 25.5 GB
+[2024-01-15 02:00:03] [SUCCESS] Service MSExchangeIS stopped
+[2024-01-15 02:00:04] [SUCCESS] Database dismounted
+[2024-01-15 02:00:05] [SUCCESS] Starting defragmentation...
+[2024-01-15 04:30:00] [SUCCESS] Defragmentation completed successfully in 150.0 minutes
+[2024-01-15 04:30:30] [SUCCESS] Database size after defragmentation: 18.2 GB
+[2024-01-15 04:30:31] [SUCCESS] Space freed: 7.3 GB (28.6%)
 ```
 
-## Коды ошибок
+## Error Codes
 
-- **Exit Code 0**: Успешное завершение
-- **Exit Code 1**: Критическая ошибка или отмена пользователем
+- **Exit Code 0**: Successful completion
+- **Exit Code 1**: Critical error or user cancellation
 
-## Устранение неполадок
+## Troubleshooting
 
-### Недостаточно места на диске
+### Insufficient Disk Space
 
 ```powershell
-# Проверка свободного места
+# Check free space
 Get-WmiObject -Class Win32_LogicalDisk | Select-Object DeviceID, @{Name="FreeSpace(GB)";Expression={[math]::Round($_.FreeSpace/1GB,2)}}
 
-# Очистка временных файлов
+# Clean temporary files
 cleanmgr /sagerun:1
 
-# Перемещение БД на другой диск (если необходимо)
+# Move database to another disk (if necessary)
 Move-DatabasePath -Identity "MyDatabase" -EdbFilePath "D:\Databases\MyDatabase.edb"
 ```
 
-### Службы не запускаются
+### Services Not Starting
 
 ```powershell
-# Ручной запуск служб Exchange
+# Manual start of Exchange services
 Start-Service MSExchangeIS
 Start-Service MSExchangeRPC
 Start-Service MSExchangeTransport
 
-# Проверка статуса служб
+# Check service status
 Get-Service | Where-Object {$_.Name -like "*Exchange*"} | Select-Object Name, Status
 ```
 
-### БД не монтируется
+### Database Won't Mount
 
 ```powershell
-# Проверка целостности БД
+# Check database integrity
 eseutil /mh "C:\Database\MyDatabase.edb"
 
-# Восстановление из логов (если необходимо)
+# Restore from logs (if necessary)
 eseutil /r E00 /l "C:\Database\Logs"
 
-# Жесткое восстановление (только в крайнем случае)
+# Hard recovery (only as last resort)
 eseutil /p "C:\Database\MyDatabase.edb"
 ```
 
-### Активные подключения
+## Recommendations
 
-```powershell
-# Просмотр активных подключений
-Get-StoreUsageStatistics -Database "MyDatabase" | Where-Object {$_.TimeInServer -gt 0}
+### Defragmentation Preparation
 
-# Принудительное отключение пользователей
-Get-LogonStatistics -Database "MyDatabase" | Disable-MailboxImportRequest
-```
-
-## Рекомендации
-
-### Подготовка к дефрагментации
-
-1. **Создайте резервную копию**
+1. **Create Backup**
    ```powershell
-   # Экспорт всех ящиков в PST
+   # Export all mailboxes to PST
    Get-Mailbox -Database "MyDatabase" | New-MailboxExportRequest -FilePath "\\BackupServer\Exports\{0}.pst"
    ```
 
-2. **Уведомите пользователей**
-   - Отправьте уведомление о запланированном обслуживании
-   - Укажите время недоступности почты
+2. **Notify Users**
+   - Send maintenance notification
+   - Specify email unavailability time
 
-3. **Выберите подходящее время**
-   - Выходные дни
-   - Нерабочие часы
-   - Периоды низкой активности
+3. **Choose Appropriate Time**
+   - Weekends
+   - Non-business hours
+   - Low activity periods
 
-### Оптимизация производительности
+### Performance Optimization
 
 ```powershell
-# Увеличение приоритета процесса дефрагментации
-# Добавьте в скрипт после запуска eseutil:
+# Increase defragmentation process priority
+# Add to script after starting eseutil:
 $defragProcess = Get-Process eseutil
 $defragProcess.PriorityClass = "High"
 ```
 
-### Мониторинг прогресса
+### Progress Monitoring
 
 ```powershell
-# Создание задачи для мониторинга размера БД
+# Create task for database size monitoring
 while ($true) {
     $size = (Get-Item "C:\Database\MyDatabase.edb").Length / 1GB
-    Write-Host "Текущий размер БД: $([math]::Round($size, 2)) GB"
-    Start-Sleep -Seconds 300  # Проверка каждые 5 минут
+    Write-Host "Current database size: $([math]::Round($size, 2)) GB"
+    Start-Sleep -Seconds 300  # Check every 5 minutes
 }
 ```
 
-## Альтернативы
+## Alternatives
 
-### Онлайн-дефрагментация
+### Online Defragmentation
 
 ```powershell
-# Автоматическая онлайн-дефрагментация (медленнее, но без простоя)
-# Настройка в свойствах БД или через PowerShell:
+# Automatic online defragmentation (slower but no downtime)
+# Configure in database properties or via PowerShell:
 Set-MailboxDatabase -Identity "MyDatabase" -BackgroundDatabaseMaintenance $true
 ```
 
-### Перемещение ящиков
+### Moving Mailboxes
 
 ```powershell
-# Альтернатива: перемещение всех ящиков в новую БД
+# Alternative: move all mailboxes to new database
 New-MailboxDatabase -Name "NewDatabase" -EdbFilePath "D:\NewDB.edb"
 Get-Mailbox -Database "MyDatabase" | New-MoveRequest -TargetDatabase "NewDatabase"
 ```
 
-## Поддержка
+## Support
 
-Для получения поддержки или сообщения об ошибках:
+For support or bug reports:
 
-1. Проверьте лог-файл на наличие детальной информации об ошибках
-2. Убедитесь, что выполнены все требования
-3. Обратитесь к документации Microsoft Exchange Server 2016
+1. Check the log file for detailed error information
+2. Ensure all requirements are met
+3. Refer to Microsoft Exchange Server 2016 documentation
 
-## Совместимость
+## Compatibility
 
 - ✅ Exchange Server 2016
 - ✅ Windows Server 2012 R2 / 2016 / 2019
 - ✅ PowerShell 5.0+
 - ❌ Exchange Online (Office 365)
-- ❌ Exchange Server 2013 (требуется адаптация)
+- ❌ Exchange Server 2013 (requires adaptation)
 
-## Лицензия
+## License
 
-Скрипт предоставляется "как есть" для использования в корпоративной среде. Используйте на свой страх и риск после тестирования в тестовой среде.
+This script is provided "as is" for use in corporate environments. Use at your own risk after testing in a test environment.

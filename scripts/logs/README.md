@@ -1,315 +1,321 @@
 # Exchange Log Cleanup Script
 
-PowerShell скрипт для автоматической очистки старых логов транзакций Exchange Server с проверкой состояния баз данных.
+**Languages / Языки:**
+- [🇺🇸 English](README.md) ← (Current)
+- [🇷🇺 Русский](README.ru.md)
 
-## Описание
+---
 
-Скрипт предназначен для безопасной очистки файлов логов транзакций Exchange Server. Он проверяет состояние каждой базы данных перед удалением логов, обеспечивая безопасность операций и предотвращая потерю данных.
+PowerShell script for automated cleanup of old Exchange Server transaction logs with database state verification.
 
-## ⚠️ Важные предупреждения
+## Description
 
-- **ОБЯЗАТЕЛЬНО** создайте резервные копии перед запуском
-- Скрипт временно отключает базы данных для проверки
-- Логи удаляются только при состоянии "Clean Shutdown"
-- Выполняйте в нерабочее время для минимизации влияния на пользователей
-- Тестируйте в тестовой среде перед использованием в продакшене
+This script is designed for safe cleanup of Exchange Server transaction log files. It checks the state of each database before deleting logs, ensuring operation safety and preventing data loss.
 
-## Возможности
+## ⚠️ Important Warnings
 
-### Безопасность
-- ✅ Проверка состояния базы данных перед удалением логов
-- ✅ Автоматическое отключение и включение баз данных
-- ✅ Защита от удаления логов при Dirty Shutdown
-- ✅ Детальное логирование всех операций
+- **MANDATORY** create backups before running
+- Script temporarily dismounts databases for verification
+- Logs are deleted only in "Clean Shutdown" state
+- Execute during non-business hours to minimize user impact
+- Test in test environment before production use
 
-### Автоматизация
-- ✅ Обработка всех баз данных на сервере
-- ✅ Настраиваемый период хранения логов
-- ✅ Автоматическое обнаружение путей к логам
-- ✅ Цветное логирование с уровнями важности
+## Features
 
-## Установка
+### Safety
+- ✅ Check database state before deleting logs
+- ✅ Automatic database dismounting and mounting
+- ✅ Protection against log deletion during Dirty Shutdown
+- ✅ Detailed logging of all operations
 
-1. Скопируйте скрипт в папку:
+### Automation
+- ✅ Process all databases on server
+- ✅ Configurable log retention period
+- ✅ Automatic discovery of log paths
+- ✅ Colored logging with importance levels
+
+## Installation
+
+1. Copy the script to the folder:
    ```
    C:\Scripts\Maintenance\ExchangeLogCleanup.ps1
    ```
 
-2. Настройте параметры в начале скрипта:
+2. Configure parameters at the beginning of the script:
    ```powershell
-   $LogRetentionDays = 7  # Срок хранения логов (в днях)
+   $LogRetentionDays = 7  # Log retention period (in days)
    ```
 
-## Параметры конфигурации
+## Configuration Parameters
 
-- **`$LogRetentionDays`** - Количество дней для хранения логов (по умолчанию: 7)
-- **`$CurrentServer`** - Имя текущего сервера (автоматически определяется)
-- **`$ScriptPath`** - Директория скрипта (автоматически определяется)
-- **`$LogFile`** - Путь к файлу логов скрипта (автоматически создается)
+- **`$LogRetentionDays`** - Number of days to retain logs (default: 7)
+- **`$CurrentServer`** - Current server name (automatically determined)
+- **`$ScriptPath`** - Script directory (automatically determined)
+- **`$LogFile`** - Script log file path (automatically created)
 
-## Использование
+## Usage
 
-### Базовый запуск
+### Basic Execution
 
 ```powershell
-# Запуск из Exchange Management Shell
+# Run from Exchange Management Shell
 .\ExchangeLogCleanup.ps1
 ```
 
-### Изменение параметров
+### Changing Parameters
 
 ```powershell
-# Изменить срок хранения логов
-# Отредактируйте в скрипте:
-$LogRetentionDays = 14  # Хранить логи 14 дней
+# Change log retention period
+# Edit in script:
+$LogRetentionDays = 14  # Keep logs for 14 days
 ```
 
-### Планирование через Task Scheduler
+### Scheduling via Task Scheduler
 
 ```powershell
-# Создание задачи для еженедельного запуска
+# Create task for weekly execution
 $Action = New-ScheduledTaskAction -Execute "PowerShell.exe" -Argument "-ExecutionPolicy Bypass -File C:\Scripts\Maintenance\ExchangeLogCleanup.ps1"
 $Trigger = New-ScheduledTaskTrigger -Weekly -DaysOfWeek Sunday -At 3:00AM
 $Settings = New-ScheduledTaskSettingsSet -RunOnlyIfNetworkAvailable -WakeToRun
 Register-ScheduledTask -TaskName "Exchange Log Cleanup" -Action $Action -Trigger $Trigger -Settings $Settings -User "DOMAIN\ExchangeAdmin"
 ```
 
-## Алгоритм работы
+## Workflow Algorithm
 
-### 1. Инициализация
-- Создание файла логов с временной меткой
-- Определение текущего сервера Exchange
-- Получение списка баз данных
+### 1. Initialization
+- Create log file with timestamp
+- Determine current Exchange server
+- Get list of databases
 
-### 2. Для каждой базы данных
-1. **Отключение базы данных**
+### 2. For Each Database
+1. **Dismount database**
    ```powershell
    Dismount-Database -Identity $DB -Confirm:$false
    ```
 
-2. **Проверка состояния**
+2. **Check state**
    ```powershell
-   eseutil /mh $DBPath  # Проверка на Clean Shutdown
+   eseutil /mh $DBPath  # Check for Clean Shutdown
    ```
 
-3. **Удаление логов** (только при Clean Shutdown)
+3. **Delete logs** (only during Clean Shutdown)
    ```powershell
    Get-ChildItem -Path $LogPath -Filter "*.log" | 
    Where-Object { $_.LastWriteTime -lt (Get-Date).AddDays(-$LogRetentionDays) } | 
    Remove-Item -Force
    ```
 
-4. **Включение базы данных**
+4. **Mount database**
    ```powershell
    Mount-Database -Identity $DB
    ```
 
-### 3. Завершение
-- Проверка статуса всех баз данных
-- Создание итогового отчета
+### 3. Completion
+- Check status of all databases
+- Create summary report
 
-## Структура логов
+## Log Structure
 
-Файл логов создается в папке скрипта с именем:
+Log file is created in script folder with name:
 ```
 ExchangeCleanup_YYYY-MM-DD_HH-MM-SS.log
 ```
 
-### Пример лога
+### Example Log
 
 ```
-2024-01-15 03:00:00 [INFO] === Запуск очистки логов Exchange на сервере EXCH01 ===
-2024-01-15 03:00:01 [INFO] Обнаружены базы на сервере EXCH01 : DB01, DB02, DB03
+2024-01-15 03:00:00 [INFO] === Starting Exchange log cleanup on server EXCH01 ===
+2024-01-15 03:00:01 [INFO] Found databases on server EXCH01 : DB01, DB02, DB03
 2024-01-15 03:00:02 [INFO] 
-Обработка базы: DB01
-2024-01-15 03:00:03 [INFO] Отключаем базу данных: DB01
-2024-01-15 03:00:08 [INFO] База DB01 успешно отключена. Проверяем состояние...
-2024-01-15 03:00:09 [INFO] База DB01 в состоянии Clean Shutdown. Удаляем старые логи...
-2024-01-15 03:00:10 [INFO] Удалено 25 логов в папке D:\Logs\DB01
-2024-01-15 03:00:11 [INFO] Запускаем базу данных: DB01
-2024-01-15 03:00:16 [INFO] База DB01 успешно запущена.
+Processing database: DB01
+2024-01-15 03:00:03 [INFO] Dismounting database: DB01
+2024-01-15 03:00:08 [INFO] Database DB01 successfully dismounted. Checking state...
+2024-01-15 03:00:09 [INFO] Database DB01 in Clean Shutdown state. Deleting old logs...
+2024-01-15 03:00:10 [INFO] Deleted 25 logs in folder D:\Logs\DB01
+2024-01-15 03:00:11 [INFO] Starting database: DB01
+2024-01-15 03:00:16 [INFO] Database DB01 successfully started.
 ```
 
-### Цветовая схема
+### Color Scheme
 
-- **INFO** - Белый текст (обычная информация)
-- **WARNING** - Желтый текст (предупреждения)
-- **ERROR** - Красный текст (ошибки)
+- **INFO** - White text (normal information)
+- **WARNING** - Yellow text (warnings)
+- **ERROR** - Red text (errors)
 
-## Проверка состояния базы данных
+## Database State Verification
 
 ### Clean Shutdown vs Dirty Shutdown
 
 **Clean Shutdown:**
-- База данных была корректно отключена
-- Все транзакции зафиксированы
-- Логи можно безопасно удалять
+- Database was properly dismounted
+- All transactions committed
+- Logs can be safely deleted
 
 **Dirty Shutdown:**
-- База данных была отключена некорректно
-- Возможны незафиксированные транзакции
-- Логи НЕ удаляются (необходимы для восстановления)
+- Database was improperly dismounted
+- Possible uncommitted transactions
+- Logs NOT deleted (needed for recovery)
 
-### Команда проверки
+### Verification Command
 
 ```cmd
 eseutil /mh "D:\Database\DB01.edb"
 ```
 
-**Результат для Clean Shutdown:**
+**Result for Clean Shutdown:**
 ```
 State: Clean Shutdown
 ```
 
-**Результат для Dirty Shutdown:**
+**Result for Dirty Shutdown:**
 ```
 State: Dirty Shutdown
 ```
 
-## Устранение неполадок
+## Troubleshooting
 
-### База данных не отключается
+### Database Won't Dismount
 
-**Симптомы:**
-- Скрипт не может отключить базу данных
-- Сообщение об ошибке при выполнении Dismount-Database
+**Symptoms:**
+- Script cannot dismount database
+- Error message during Dismount-Database execution
 
-**Решение:**
+**Solution:**
 ```powershell
-# Проверка активных подключений
+# Check active connections
 Get-StoreUsageStatistics -Database "DB01" | Where-Object {$_.TimeInServer -gt 0}
 
-# Принудительное отключение
+# Force dismount
 Dismount-Database -Identity "DB01" -Confirm:$false -Force
 ```
 
-### Dirty Shutdown после отключения
+### Dirty Shutdown After Dismount
 
-**Симптомы:**
-- База показывает Dirty Shutdown после корректного отключения
-- Логи не удаляются
+**Symptoms:**
+- Database shows Dirty Shutdown after proper dismount
+- Logs not deleted
 
-**Решение:**
+**Solution:**
 ```powershell
-# Проверка целостности базы
+# Check database integrity
 eseutil /mh "D:\Database\DB01.edb"
 
-# Восстановление из логов (если необходимо)
+# Restore from logs (if necessary)
 eseutil /r E00 /l "D:\Logs\DB01"
 
-# Проверка после восстановления
+# Check after recovery
 eseutil /mh "D:\Database\DB01.edb"
 ```
 
-### База данных не монтируется
+### Database Won't Mount
 
-**Симптомы:**
-- Ошибка при попытке включения базы
-- База остается в состоянии Dismounted
+**Symptoms:**
+- Error when trying to mount database
+- Database remains in Dismounted state
 
-**Решение:**
+**Solution:**
 ```powershell
-# Проверка ошибок в логах событий
+# Check errors in event logs
 Get-EventLog -LogName Application -Source "MSExchange*" -Newest 10
 
-# Проверка целостности
+# Check integrity
 eseutil /mh "D:\Database\DB01.edb"
 
-# Принудительное монтирование
+# Force mount
 Mount-Database -Identity "DB01" -Force
 ```
 
-## Рекомендации
+## Recommendations
 
-### Планирование очистки
+### Cleanup Scheduling
 
-1. **Еженедельная очистка** (рекомендуется)
+1. **Weekly cleanup** (recommended)
    ```powershell
    $LogRetentionDays = 7
-   # Запуск каждое воскресенье в 3:00
+   # Run every Sunday at 3:00 AM
    ```
 
-2. **Ежемесячная очистка**
+2. **Monthly cleanup**
    ```powershell
    $LogRetentionDays = 30
-   # Запуск первого числа каждого месяца
+   # Run on first day of each month
    ```
 
-### Мониторинг дискового пространства
+### Disk Space Monitoring
 
 ```powershell
-# Проверка свободного места до и после очистки
+# Check free space before and after cleanup
 Get-WmiObject -Class Win32_LogicalDisk | 
 Select-Object DeviceID, @{Name="FreeSpace(GB)";Expression={[math]::Round($_.FreeSpace/1GB,2)}}
 ```
 
-### Резервное копирование
+### Backup
 
 ```powershell
-# Создание резервной копии логов перед удалением
+# Create backup of logs before deletion
 $BackupPath = "\\BackupServer\Exchange\Logs\$(Get-Date -Format 'yyyyMMdd')"
 New-Item -ItemType Directory -Path $BackupPath -Force
 Copy-Item -Path "D:\Logs\*" -Destination $BackupPath -Recurse
 ```
 
-## Автоматизация
+## Automation
 
-### Интеграция с системой мониторинга
+### Monitoring System Integration
 
 ```powershell
-# Отправка уведомлений о результатах
+# Send notifications about results
 if ($ErrorCount -gt 0) {
-    Send-MailMessage -To "admin@company.com" -Subject "Exchange Log Cleanup - Errors" -Body "Обнаружены ошибки при очистке логов"
+    Send-MailMessage -To "admin@company.com" -Subject "Exchange Log Cleanup - Errors" -Body "Errors found during log cleanup"
 }
 ```
 
-### Создание отчетов
+### Creating Reports
 
 ```powershell
-# Анализ результатов очистки
+# Analyze cleanup results
 $LogPath = "C:\Scripts\Maintenance"
 $CleanupLogs = Get-ChildItem $LogPath -Filter "ExchangeCleanup_*.log"
 
 foreach ($Log in $CleanupLogs) {
     $Content = Get-Content $Log.FullName
-    $DeletedCount = ($Content | Select-String "Удалено \d+ логов").Matches.Count
+    $DeletedCount = ($Content | Select-String "Deleted \d+ logs").Matches.Count
     $ErrorCount = ($Content | Select-String "\[ERROR\]").Count
     
-    Write-Host "Лог: $($Log.Name), Удалено: $DeletedCount, Ошибок: $ErrorCount"
+    Write-Host "Log: $($Log.Name), Deleted: $DeletedCount, Errors: $ErrorCount"
 }
 ```
 
-## Требования
+## Requirements
 
 - Exchange Server 2016/2019
-- PowerShell 5.0 или выше
-- Права администратора Exchange
-- Права локального администратора на сервере
+- PowerShell 5.0 or higher
+- Exchange administrator rights
+- Local administrator rights on server
 
-## Совместимость
+## Compatibility
 
 - ✅ Exchange Server 2016
 - ✅ Exchange Server 2019
 - ✅ Windows Server 2012 R2 / 2016 / 2019
-- ⚠️ Exchange Server 2013 (требует тестирования)
-- ❌ Exchange Online (не применимо)
+- ⚠️ Exchange Server 2013 (requires testing)
+- ❌ Exchange Online (not applicable)
 
-## Безопасность
+## Security
 
-- Скрипт проверяет состояние базы перед удалением логов
-- Автоматическое восстановление баз данных после операций
-- Детальное логирование для аудита
-- Защита от случайного удаления важных логов
+- Script checks database state before deleting logs
+- Automatic database recovery after operations
+- Detailed logging for audit
+- Protection against accidental deletion of important logs
 
-## Поддержка
+## Support
 
-Для получения помощи:
+For help:
 
-1. Проверьте файл логов скрипта
-2. Используйте Event Viewer для диагностики Exchange
-3. Проверьте состояние баз данных через Exchange Management Console
-4. Обратитесь к документации Microsoft Exchange
+1. Check script log file
+2. Use Event Viewer for Exchange diagnostics
+3. Check database state via Exchange Management Console
+4. Refer to Microsoft Exchange documentation
 
-## Лицензия
+## License
 
-Скрипт предоставляется "как есть" для использования в корпоративной среде. Тестируйте перед использованием в продакшене.
+This script is provided "as is" for use in corporate environments. Test before production use.

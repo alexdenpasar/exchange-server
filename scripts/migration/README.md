@@ -1,42 +1,48 @@
 # Exchange 2016 Migration Scripts
 
-Набор автоматизированных PowerShell скриптов для безопасной миграции почтовых ящиков Exchange Server 2016 с мониторингом и контролем параллельности.
+**Languages / Языки:**
+- [🇺🇸 English](README.md) ← (Current)
+- [🇷🇺 Русский](README.ru.md)
 
-## Состав пакета
+---
 
-### Скрипты миграции
+Set of automated PowerShell scripts for safe migration of Exchange Server 2016 mailboxes with monitoring and parallelism control.
 
-1. **`Email_PrimaryOnly_Migrations.ps1`** - Миграция основных почтовых ящиков
-2. **`Email_ArchiveOnly_Migrations.ps1`** - Миграция только архивов
-3. **`Migration_Monitor.ps1`** - Мониторинг активных миграций
+## Package Contents
 
-### Конфигурационные файлы
+### Migration Scripts
 
-4. **`EmailList.txt`** - Список email-адресов для миграции
+1. **`Email_PrimaryOnly_Migrations.ps1`** - Primary mailbox migration
+2. **`Email_ArchiveOnly_Migrations.ps1`** - Archive-only migration
+3. **`Migration_Monitor.ps1`** - Active migration monitoring
 
-## Возможности
+### Configuration Files
 
-### Безопасность
-- ✅ Контроль количества параллельных миграций
-- ✅ Автоматическое обнаружение зависших миграций
-- ✅ Перезапуск неудачных миграций
-- ✅ Детальное логирование всех операций
+4. **`EmailList.txt`** - List of email addresses for migration
 
-### Мониторинг
-- ✅ Реальное время отслеживания статуса
-- ✅ Цветная индикация состояния миграций
-- ✅ Отображение прогресса выполнения
-- ✅ Автоматическое обновление статуса
+## Features
 
-### Устойчивость
-- ✅ Обработка существующих миграций
-- ✅ Восстановление после сбоев
-- ✅ Защита от повторного запуска
-- ✅ Автоматическая очистка завершенных запросов
+### Safety
+- ✅ Control number of parallel migrations
+- ✅ Automatic detection of hung migrations
+- ✅ Restart of failed migrations
+- ✅ Detailed logging of all operations
 
-## Установка
+### Monitoring
+- ✅ Real-time status tracking
+- ✅ Color-coded migration status indication
+- ✅ Progress display
+- ✅ Automatic status updates
 
-### Структура папок
+### Resilience
+- ✅ Handle existing migrations
+- ✅ Recovery from failures
+- ✅ Protection against duplicate runs
+- ✅ Automatic cleanup of completed requests
+
+## Installation
+
+### Folder Structure
 
 ```
 C:\Scripts\Migration\
@@ -49,210 +55,210 @@ C:\Scripts\Migration\
     └── MailboxMigration_OnlyArchive_YYYYMMDD_HHMMSS.log
 ```
 
-### Настройка параметров
+### Parameter Configuration
 
-Отредактируйте параметры в каждом скрипте:
+Edit parameters in each script:
 
 ```powershell
-# Основные параметры
-$TargetDatabase = "DB-Archive"            # Целевая база данных
-$DomainController = "dc.example.com"      # Домен-контроллер
-$EmailListFile = "C:\Scripts\Migration\EmailList.txt"  # Файл со списком email
-$MaxParallelMoves = 3                     # Максимальное количество параллельных миграций
-$BadItemLimit = 100                       # Лимит плохих элементов
-$CheckInterval = 60                       # Интервал проверки (секунды)
+# Main parameters
+$TargetDatabase = "DB-Archive"            # Target database
+$DomainController = "dc.example.com"      # Domain controller
+$EmailListFile = "C:\Scripts\Migration\EmailList.txt"  # Email list file
+$MaxParallelMoves = 3                     # Maximum parallel migrations
+$BadItemLimit = 100                       # Bad item limit
+$CheckInterval = 60                       # Check interval (seconds)
 ```
 
-### Подготовка списка email
+### Email List Preparation
 
-Создайте файл `EmailList.txt` с email-адресами:
+Create `EmailList.txt` file with email addresses:
 
 ```
 user1@example.com
 user2@example.com
 user3@example.com
-# Комментарии начинаются с #
-# user4@example.com - временно отключен
+# Comments start with #
+# user4@example.com - temporarily disabled
 ```
 
-## Использование
+## Usage
 
-### Миграция основных почтовых ящиков
+### Primary Mailbox Migration
 
 ```powershell
-# Запуск из Exchange Management Shell
+# Run from Exchange Management Shell
 .\Email_PrimaryOnly_Migrations.ps1
 ```
 
-**Особенности:**
-- Перемещает основные почтовые ящики (без архивов)
-- Использует параметр `-PrimaryOnly`
-- Рекомендуется для больших ящиков
-- Максимум 3 параллельные миграции по умолчанию
+**Features:**
+- Moves primary mailboxes (without archives)
+- Uses `-PrimaryOnly` parameter
+- Recommended for large mailboxes
+- Maximum 3 parallel migrations by default
 
-### Миграция только архивов
+### Archive-Only Migration
 
 ```powershell
-# Запуск из Exchange Management Shell
+# Run from Exchange Management Shell
 .\Email_ArchiveOnly_Migrations.ps1
 ```
 
-**Особенности:**
-- Перемещает только архивы почтовых ящиков
-- Использует параметр `-ArchiveOnly`
-- Меньше влияет на производительность
-- Максимум 1 параллельная миграция по умолчанию
+**Features:**
+- Moves only mailbox archives
+- Uses `-ArchiveOnly` parameter
+- Less performance impact
+- Maximum 1 parallel migration by default
 
-### Мониторинг миграций
+### Migration Monitoring
 
 ```powershell
-# Запуск мониторинга
+# Run monitoring
 .\Migration_Monitor.ps1
 ```
 
-**Возможности мониторинга:**
-- Реальное время отслеживания статуса
-- Цветная индикация состояния
-- Автоматическое обновление каждые 30 секунд
-- Остановка по Ctrl+C
+**Monitoring capabilities:**
+- Real-time status tracking
+- Color-coded status indication
+- Automatic updates every 30 seconds
+- Stop with Ctrl+C
 
-## Детали реализации
+## Implementation Details
 
-### Контроль параллельности
+### Parallelism Control
 
-Скрипты контролируют количество одновременно выполняющихся миграций:
+Scripts control the number of simultaneously running migrations:
 
 ```powershell
-# Если достигнут лимит, ожидаем завершения
+# If limit reached, wait for completion
 while ($InProgress.Count -ge $MaxParallelMoves) {
-    # Проверка статуса активных миграций
-    # Удаление завершенных из очереди
-    # Ожидание освобождения слота
+    # Check status of active migrations
+    # Remove completed from queue
+    # Wait for slot to free up
 }
 ```
 
-### Обнаружение зависших миграций
+### Hung Migration Detection
 
-Автоматическое обнаружение и перезапуск зависших миграций:
+Automatic detection and restart of hung migrations:
 
 ```powershell
-# Проверка времени выполнения
+# Check execution time
 if (((Get-Date) - $InProgress[$ActiveEmail]).TotalHours -gt 24) {
-    # Анализ причины зависания
-    # Перезапуск при необходимости
+    # Analyze cause of hang
+    # Restart if necessary
 }
 ```
 
-### Структура логов
+### Log Structure
 
-Подробные логи для каждой миграции:
+Detailed logs for each migration:
 
 ```
-2024-01-15 10:30:00 - Скрипт миграции почтовых ящиков запущен
-2024-01-15 10:30:01 - Целевая БД: DB-Archive, Макс. параллельных миграций: 3
-2024-01-15 10:30:02 - Всего найдено email-адресов: 50
-2024-01-15 10:30:03 - Начало миграции почтового ящика user1@example.com
-2024-01-15 10:30:04 - Запрос на миграцию создан для user1@example.com
-2024-01-15 11:45:30 - Миграция для user1@example.com завершена (Статус: Completed, Процент: 100%)
+2024-01-15 10:30:00 - Mailbox migration script started
+2024-01-15 10:30:01 - Target DB: DB-Archive, Max parallel migrations: 3
+2024-01-15 10:30:02 - Total email addresses found: 50
+2024-01-15 10:30:03 - Starting migration of mailbox user1@example.com
+2024-01-15 10:30:04 - Migration request created for user1@example.com
+2024-01-15 11:45:30 - Migration for user1@example.com completed (Status: Completed, Percent: 100%)
 ```
 
-## Индикация статуса в мониторе
+## Status Indication in Monitor
 
-### Цветовая схема статусов
+### Status Color Scheme
 
-- 🟢 **Зеленый** - Успешное выполнение
+- 🟢 **Green** - Successful execution
   - `Completed`, `CopyingMessages`, `ScanningForMessages`
-- 🟡 **Желтый** - Предупреждения
+- 🟡 **Yellow** - Warnings
   - `InProgress`, `StalledDueToMail_*`, `Suspended`
-- 🔴 **Красный** - Ошибки
+- 🔴 **Red** - Errors
   - `Failed`, `StalledDueToSource_*`, `StalledDueToTarget_*`
-- 🔵 **Синий** - Ожидание
+- 🔵 **Blue** - Waiting
   - `Queued`, `WaitingForJobPickup`
 
-### Интерпретация статусов
+### Status Interpretation
 
 ```
-Пользователь: John Doe (john.doe@example.com)
-Статус: InProgress
-Детальный статус: CopyingMessages
-Прогресс: 75%
-Источник: DB-Old
-Назначение: DB-Archive
+User: John Doe (john.doe@example.com)
+Status: InProgress
+Detailed status: CopyingMessages
+Progress: 75%
+Source: DB-Old
+Target: DB-Archive
 ```
 
-## Устранение неполадок
+## Troubleshooting
 
-### Зависшие миграции
+### Hung Migrations
 
-**Симптомы:**
-- Миграция выполняется более 24 часов
-- Прогресс не изменяется длительное время
-- Статус `StalledDueToSource_*` или `StalledDueToTarget_*`
+**Symptoms:**
+- Migration running for more than 24 hours
+- Progress not changing for extended time
+- Status `StalledDueToSource_*` or `StalledDueToTarget_*`
 
-**Решение:**
+**Solution:**
 ```powershell
-# Ручная проверка миграции
+# Manual migration check
 Get-MoveRequestStatistics -Identity "user@example.com" -IncludeReport
 
-# Перезапуск зависшей миграции
+# Restart hung migration
 Remove-MoveRequest -Identity "user@example.com" -Confirm:$false
 New-MoveRequest -Identity "user@example.com" -TargetDatabase "DB-Archive"
 ```
 
-### Ошибки "BadItemLimit"
+### "BadItemLimit" Errors
 
-**Симптомы:**
-- Миграция останавливается с ошибкой превышения лимита
-- В логах сообщения о поврежденных элементах
+**Symptoms:**
+- Migration stops with limit exceeded error
+- Messages about corrupted items in logs
 
-**Решение:**
+**Solution:**
 ```powershell
-# Увеличение лимита в скрипте
+# Increase limit in script
 $BadItemLimit = 500
 
-# Или использование AcceptLargeDataLoss
+# Or use AcceptLargeDataLoss
 New-MoveRequest -Identity "user@example.com" -TargetDatabase "DB-Archive" -BadItemLimit 1000 -AcceptLargeDataLoss
 ```
 
-### Проблемы с производительностью
+### Performance Issues
 
-**Рекомендации:**
-- Уменьшите `$MaxParallelMoves` для больших ящиков
-- Выполняйте миграции в нерабочее время
-- Мониторьте использование дисков и сети
+**Recommendations:**
+- Reduce `$MaxParallelMoves` for large mailboxes
+- Run migrations during non-business hours
+- Monitor disk and network usage
 
 ```powershell
-# Настройка для медленных систем
+# Settings for slow systems
 $MaxParallelMoves = 1
-$CheckInterval = 120  # Увеличить интервал проверки
+$CheckInterval = 120  # Increase check interval
 ```
 
-## Рекомендации по использованию
+## Usage Recommendations
 
-### Планирование миграций
+### Migration Planning
 
-1. **Подготовка:**
+1. **Preparation:**
    ```powershell
-   # Создание резервных копий
+   # Create backups
    Get-Mailbox -Database "SourceDB" | New-MailboxExportRequest -FilePath "\\BackupServer\{0}.pst"
    
-   # Проверка квот целевой БД
+   # Check target database quotas
    Get-MailboxDatabase "TargetDB" | fl ProhibitSendQuota,ProhibitSendReceiveQuota
    ```
 
-2. **Оптимизация:**
+2. **Optimization:**
    ```powershell
-   # Предварительная дефрагментация источника
+   # Pre-defragmentation of source
    .\ExchangeDefrag.ps1 -DatabaseName "SourceDB"
    
-   # Мониторинг производительности
+   # Performance monitoring
    Get-Counter "\MSExchange Database(*)\Database Page Fault Stalls/sec"
    ```
 
-### Пакетная миграция
+### Batch Migration
 
 ```powershell
-# Миграция по группам
+# Migration by groups
 $Groups = @("Sales", "Marketing", "IT")
 foreach ($Group in $Groups) {
     Get-ADGroupMember $Group | ForEach-Object { $_.Mail } | Out-File "EmailList_$Group.txt"
@@ -260,39 +266,39 @@ foreach ($Group in $Groups) {
 }
 ```
 
-### Автоматизация через Task Scheduler
+### Task Scheduler Automation
 
 ```powershell
-# Создание задачи для ночных миграций
+# Create task for nightly migrations
 $Action = New-ScheduledTaskAction -Execute "PowerShell.exe" -Argument "-ExecutionPolicy Bypass -File C:\Scripts\Migration\Email_PrimaryOnly_Migrations.ps1"
 $Trigger = New-ScheduledTaskTrigger -Daily -At 2:00AM
 $Settings = New-ScheduledTaskSettingsSet -RunOnlyIfNetworkAvailable
 Register-ScheduledTask -TaskName "Exchange Migration" -Action $Action -Trigger $Trigger -Settings $Settings
 ```
 
-## Мониторинг и отчетность
+## Monitoring and Reporting
 
-### Статистика миграций
+### Migration Statistics
 
 ```powershell
-# Анализ логов миграций
+# Analyze migration logs
 $LogPath = "C:\Scripts\Migration\Logs"
 $LogFiles = Get-ChildItem $LogPath -Filter "*.log"
 
 foreach ($LogFile in $LogFiles) {
     $Content = Get-Content $LogFile.FullName
-    $Successful = ($Content | Select-String "завершена успешно").Count
-    $Failed = ($Content | Select-String "не удалась").Count
+    $Successful = ($Content | Select-String "completed successfully").Count
+    $Failed = ($Content | Select-String "failed").Count
     
-    Write-Host "Файл: $($LogFile.Name)"
-    Write-Host "Успешно: $Successful, Неудачно: $Failed"
+    Write-Host "File: $($LogFile.Name)"
+    Write-Host "Successful: $Successful, Failed: $Failed"
 }
 ```
 
-### Создание отчетов
+### Creating Reports
 
 ```powershell
-# Еженедельный отчет о миграциях
+# Weekly migration report
 $Report = @()
 Get-MoveRequest | Get-MoveRequestStatistics | ForEach-Object {
     $Report += [PSCustomObject]@{
@@ -308,30 +314,30 @@ Get-MoveRequest | Get-MoveRequestStatistics | ForEach-Object {
 $Report | Export-Csv "MigrationReport_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
 ```
 
-## Совместимость
+## Compatibility
 
 - ✅ Exchange Server 2016
 - ✅ Windows Server 2012 R2 / 2016 / 2019
 - ✅ PowerShell 5.0+
-- ⚠️ Exchange Server 2013 (требует адаптации)
-- ❌ Exchange Online (используйте другие инструменты)
+- ⚠️ Exchange Server 2013 (requires adaptation)
+- ❌ Exchange Online (use other tools)
 
-## Безопасность
+## Security
 
-- Скрипты требуют права Exchange Organization Management
-- Логи содержат только необходимую информацию (без паролей)
-- Поддержка прерывания операций через Ctrl+C
-- Автоматическая очистка временных файлов
+- Scripts require Exchange Organization Management rights
+- Logs contain only necessary information (no passwords)
+- Support for operation interruption via Ctrl+C
+- Automatic cleanup of temporary files
 
-## Поддержка
+## Support
 
-Для получения помощи:
+For help:
 
-1. Проверьте лог-файлы в папке `Logs\`
-2. Используйте мониторинг для диагностики
-3. Обратитесь к документации Microsoft Exchange
-4. Проверьте права доступа и состояние служб
+1. Check log files in `Logs\` folder
+2. Use monitoring for diagnostics
+3. Refer to Microsoft Exchange documentation
+4. Check access rights and service status
 
-## Лицензия
+## License
 
-Скрипты предоставляются "как есть" для использования в корпоративной среде. Тестируйте в тестовой среде перед использованием в продакшене.
+Scripts are provided "as is" for use in corporate environments. Test in test environment before production use.

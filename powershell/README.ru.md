@@ -1,349 +1,345 @@
-# Exchange Server 2016 - PowerShell Commands Reference
+# Exchange Server 2016 - Справочник команд PowerShell
 
-**Languages / Языки:**
-- [🇺🇸 English](README.md) ← (Current)
-- [🇷🇺 Русский](README.ru.md)
+## Языки / Languages
+- [🇷🇺 Русский](README.ru.md) ← (Текущий)
+- [🇺🇸 English](README.md)
 
----
+## Миграция
 
-## Migration
-
-### Request to move mailbox to another database (with archive)
+### Запрос на перемещения ящика в другую БД (вместе с архивом)
 ```powershell
 New-MoveRequest -Identity "email@example.com" -DomainController "dc.example.com" -TargetDatabase "Name_DB" -BadItemLimit 1 -AcceptLargeDataLoss -ErrorAction Stop
 ```
 
-### Move only primary mailbox to another database without archive
-```powershell
-New-MoveRequest -Identity "email@example.com" -DomainController "dc.example.com" -TargetDatabase "Name_DB" -BadItemLimit 3 -AcceptLargeDataLoss -PrimaryOnly -ErrorAction Stop
-```
+### Перемещение только ящика в другую бд без архива
+ New-MoveRequest -Identity "email@example.com" -DomainController "dc.example.com" -TargetDatabase "Name_DB" -BadItemLimit 3 -AcceptLargeDataLoss -PrimaryOnly -ErrorAction Stop
 
-### Move only archive to another database
+### Перемещение только архива в другую базу
 ```powershell
 New-MoveRequest -Identity "email@example.com" -DomainController "dc.example.com" -ArchiveOnly -ArchiveTargetDatabase "Name_DB-Archive"
 ```
 
-### View active migrations
+### Просмотр активных миграций
 ```powershell
 Get-MoveRequest -DomainController "dc.example.com" -ErrorAction SilentlyContinue | Where-Object { $_.TargetDatabase -eq "Name_DB" }
 ```
 
-### View status of all migrations
+### Просмотр статуса всех миграций
 ```powershell
 Get-MoveRequest | Get-MoveRequestStatistics | ft DisplayName, Status, PercentComplete, TotalMailboxSize
 ```
 
-### Remove completed and failed migrations
+### Удаление завершенных и ошибочных миграций
 ```powershell
 Remove-MoveRequest -Identity "email@example.com" -DomainController "dc.example.com" -Confirm:$false -ErrorAction SilentlyContinue
 ```
 
-### Suspend migration
+### Приостановка миграции
 ```powershell
-Suspend-MoveRequest -Identity "email@example.com" -SuspendComment "Suspended for maintenance"
+Suspend-MoveRequest -Identity "email@example.com" -SuspendComment "Приостановлено на техническое обслуживание"
 ```
 
-### Resume migration
+### Возобновление миграции
 ```powershell
 Resume-MoveRequest -Identity "email@example.com"
 ```
 
-## Database Management
+## Работа с БД
 
-### Dismount database
+### Отключение (отмонтирование) БД
 ```powershell
 Dismount-Database "Name_DB" -Confirm:$false
 ```
 
-### Mount database
+### Включение (примонтирование) БД
 ```powershell
 Mount-Database "Name_DB" -Confirm:$false
 ```
 
-### Check database status
+### Проверка статуса БД
 ```cmd
 eseutil /mh D:\mailbox\db.edb
 ```
 
-### Check database logs (must be in database folder)
+### Проверка логов БД (нужно находиться в папке с БД)
 ```cmd
 eseutil /ml E00
 ```
 
-### Restore database from logs (must be in database folder)
+### Восстановление БД из логов (нужно находиться в папке с БД)
 ```cmd
 eseutil /r E00
 ```
 
-### Hard recovery of database
+### Жесткое восстановление БД
 ```cmd
 eseutil /p D:\mailbox\db.edb
 ```
 
-### Defragment database after deleting/moving mailboxes
+### Сжатие (дефрагментация) БД после удаления/переноса почтовых ящиков
 ```cmd
 eseutil /d D:\mailbox\db.edb
 ```
 
-### Check database for errors and repair
+### Проверка БД на ошибки и восстановление
 ```powershell
 New-MailboxRepairRequest -Database "Name_DB" -CorruptionType SearchFolder,AggregateCounts,ProvisionedFolder,FolderView
 ```
 
-### Track progress of database integrity check
+### Отследить прогресс операции проверки целостности БД
 ```powershell
 Get-MailboxRepairRequest -Database "Name_DB"
 ```
 
-### View mailboxes in database
+### Просмотр ящиков в БД
 ```powershell
 Get-MailboxStatistics -Database "Name_DB" -DomainController "dc.example.com" | ft DisplayName, TotalItemSize, ItemCount
 Get-MailboxStatistics -Database "Name_DB" -DomainController "dc.example.com" | ft DisplayName, TotalItemSize
 ```
 
-### View where mailbox archive is located
+### Просмотр где находится сетевой архив ящика
 ```powershell
 Get-Mailbox -Identity "email@example.com" -DomainController "dc.example.com" -Archive | Select-Object DisplayName, ArchiveDatabase
 ```
 
-### More detailed view
+### Более подробно
 ```powershell
 Get-Mailbox -Database "Name_DB" -DomainController "dc.example.com" -Archive | Select-Object DisplayName, Alias, ArchiveDatabase
 ```
 
-### View all databases and their status
+### Просмотр всех БД и их статуса
 ```powershell
 Get-MailboxDatabase | ft Name, Server, Mounted, DatabaseSize
 ```
 
-### Create new database
+### Создание новой БД
 ```powershell
 New-MailboxDatabase -Name "NewDB" -EdbFilePath "D:\mailbox\NewDB.edb" -LogFolderPath "D:\logs\NewDB"
 ```
 
-## Mailbox Management
+## Управление ящиками
 
-### Grant full access to mailbox
+### Дать полный доступ на управление ящиками
 ```powershell
 Add-MailboxPermission -Identity "mailbox_user@domain.com" -User "your_user@domain.com" -DomainController "dc.example.com" -AccessRights FullAccess -InheritanceType All
 ```
 
-### Grant send on behalf permission
+### Дать разрешение отправлять от имени
 ```powershell
 Set-Mailbox -Identity "mailbox_user@domain.com" -DomainController "dc.example.com" -GrantSendOnBehalfTo "your_user@domain.com"
 ```
 
-### Allow send as
+### Разрешить отправлять как
 ```powershell
 Add-ADPermission -Identity "mailbox_user" -User "your_user" -DomainController "dc.example.com" -ExtendedRights "Send As"
 ```
 
-### View permissions on mailbox
+### Посмотреть какие разрешения есть на ящике
 ```powershell
 Get-MailboxPermission -Identity "ceo@domain.com" -DomainController "dc.example.com" | Where-Object { $_.User -like "*alex*" }
 ```
 
-### Remove permissions (FullAccess example)
+### Удалить разрешения на примере FullAccess
 ```powershell
 Remove-MailboxPermission -Identity "ceo@domain.com" -User "alex@domain.com" -DomainController "dc.example.com" -AccessRights FullAccess -InheritanceType All
 ```
 
-### Create new mailbox
+### Создание нового ящика
 ```powershell
 New-Mailbox -Name "John Doe" -UserPrincipalName "john.doe@domain.com" -SamAccountName "john.doe" -Database "Name_DB" -Password (ConvertTo-SecureString -String "Password123!" -AsPlainText -Force)
 ```
 
-### Enable archive for mailbox
+### Включение архива для ящика
 ```powershell
 Enable-Mailbox -Identity "user@domain.com" -Archive -ArchiveDatabase "Archive_DB"
 ```
 
-### Disable archive
+### Отключение архива
 ```powershell
 Disable-Mailbox -Identity "user@domain.com" -Archive
 ```
 
-### Set mailbox quotas
+### Установка квот на ящик
 ```powershell
 Set-Mailbox -Identity "user@domain.com" -IssueWarningQuota 1GB -ProhibitSendQuota 1.2GB -ProhibitSendReceiveQuota 1.5GB
 ```
 
-### Disable mailbox (keep in database)
+### Отключение ящика (сохранение в БД)
 ```powershell
 Disable-Mailbox -Identity "user@domain.com" -Confirm:$false
 ```
 
-### Remove mailbox from database
+### Удаление ящика из БД
 ```powershell
 Remove-Mailbox -Identity "user@domain.com" -Confirm:$false
 ```
 
-## Distribution Groups
+## Группы рассылки
 
-### Create distribution group
+### Создание группы рассылки
 ```powershell
 New-DistributionGroup -Name "IT Team" -SamAccountName "ITTeam" -PrimarySmtpAddress "it@domain.com"
 ```
 
-### Add user to group
+### Добавление пользователя в группу
 ```powershell
 Add-DistributionGroupMember -Identity "ITTeam" -Member "user@domain.com"
 ```
 
-### Remove user from group
+### Удаление пользователя из группы
 ```powershell
 Remove-DistributionGroupMember -Identity "ITTeam" -Member "user@domain.com"
 ```
 
-### View group members
+### Просмотр членов группы
 ```powershell
 Get-DistributionGroupMember -Identity "ITTeam" | ft Name, PrimarySmtpAddress
 ```
 
-### Create dynamic distribution group
+### Создание динамической группы рассылки
 ```powershell
 New-DynamicDistributionGroup -Name "All Users" -RecipientFilter "RecipientType -eq 'UserMailbox'"
 ```
 
-## Public Folders
+## Общие папки
 
-### Create public folder
+### Создание общей папки
 ```powershell
 New-PublicFolder -Name "Company Documents" -Path "\"
 ```
 
-### Create public folder database
+### Создание базы данных общих папок
 ```powershell
 New-PublicFolderDatabase -Name "Public Folder DB" -EdbFilePath "D:\PublicFolders\PFDB.edb"
 ```
 
-### Mail-enable public folder
+### Включение почты для общей папки
 ```powershell
 Enable-MailPublicFolder -Identity "\Company Documents" -ExternalEmailAddress "docs@domain.com"
 ```
 
-### Set permissions on public folder
+### Установка разрешений на общую папку
 ```powershell
 Add-PublicFolderClientPermission -Identity "\Company Documents" -User "user@domain.com" -AccessRights Editor
 ```
 
-## Transport and Rules
+## Транспорт и правила
 
-### Create transport rule
+### Создание правила транспорта
 ```powershell
 New-TransportRule -Name "Block External Attachments" -FromScope NotInOrganization -AttachmentHasExecutableContent $true -RejectMessageReasonText "Executable attachments are blocked"
 ```
 
-### View transport rules
+### Просмотр правил транспорта
 ```powershell
 Get-TransportRule | ft Name, State, Priority
 ```
 
-### Disable rule
+### Отключение правила
 ```powershell
 Disable-TransportRule -Identity "Block External Attachments"
 ```
 
-### Create send connector
+### Создание соединителя отправки
 ```powershell
 New-SendConnector -Name "Internet Connector" -Usage Internet -AddressSpaces "SMTP:*;1" -SourceTransportServers "EXCH01"
 ```
 
-### View message queues
+### Просмотр очереди сообщений
 ```powershell
 Get-Queue | ft Identity, Status, MessageCount, NextHopDomain
 ```
 
-## Monitoring and Statistics
+## Мониторинг и статистика
 
-### View mailbox statistics by size
+### Просмотр статистики ящиков по размеру
 ```powershell
 Get-MailboxStatistics | Sort-Object TotalItemSize -Descending | ft DisplayName, TotalItemSize, ItemCount
 ```
 
-### View top 10 largest mailboxes
+### Просмотр топ-10 самых больших ящиков
 ```powershell
 Get-MailboxStatistics | Sort-Object TotalItemSize -Descending | Select-Object -First 10 | ft DisplayName, TotalItemSize
 ```
 
-### Check Exchange services status
+### Проверка состояния служб Exchange
 ```powershell
 Get-Service | Where-Object {$_.Name -like "*Exchange*"} | ft Name, Status
 ```
 
-### View Exchange event logs
+### Просмотр логов событий Exchange
 ```powershell
 Get-EventLog -LogName Application -Source "MSExchange*" -Newest 50 | ft TimeGenerated, EntryType, Source, Message
 ```
 
-### Test mailbox connectivity
+### Тест подключения к ящику
 ```powershell
 Test-MapiConnectivity -Identity "user@domain.com"
 ```
 
-### Test mail flow
+### Тест потока почты
 ```powershell
 Test-MailFlow -TargetEmailAddress "test@domain.com"
 ```
 
-## Backup and Restore
+## Резервное копирование
 
-### Create database backup
+### Создание резервной копии БД
 ```powershell
 New-MailboxExportRequest -Mailbox "user@domain.com" -FilePath "\\backup\exports\user.pst"
 ```
 
-### Import from PST file
+### Импорт из PST файла
 ```powershell
 New-MailboxImportRequest -Mailbox "user@domain.com" -FilePath "\\backup\imports\user.pst"
 ```
 
-### View export/import status
+### Просмотр статуса экспорта/импорта
 ```powershell
 Get-MailboxExportRequest | ft Name, Status, PercentComplete
 Get-MailboxImportRequest | ft Name, Status, PercentComplete
 ```
 
-## Certificates
+## Сертификаты
 
-### View certificates
+### Просмотр сертификатов
 ```powershell
 Get-ExchangeCertificate | ft Thumbprint, Subject, NotAfter, Services
 ```
 
-### Assign certificate to services
+### Назначение сертификата службам
 ```powershell
 Enable-ExchangeCertificate -Thumbprint "THUMBPRINT" -Services IIS,SMTP,POP,IMAP
 ```
 
-### Create certificate request
+### Создание запроса на сертификат
 ```powershell
 New-ExchangeCertificate -GenerateRequest -SubjectName "CN=mail.domain.com" -DomainName "mail.domain.com","autodiscover.domain.com" -Path "C:\cert_request.req"
 ```
 
-## Useful Diagnostic Commands
+## Полезные команды для диагностики
 
-### Check database replication (for DAG)
+### Проверка репликации БД (для DAG)
 ```powershell
 Get-MailboxDatabaseCopyStatus | ft Name, Status, CopyQueueLength, ReplayQueueLength
 ```
 
-### View user activity
+### Просмотр активности пользователей
 ```powershell
 Get-MailboxStatistics -Identity "user@domain.com" | Select-Object DisplayName, LastLogonTime, LastLogoffTime
 ```
 
-### Search messages in mailboxes
+### Поиск сообщений в ящиках
 ```powershell
 New-MailboxSearch -Name "SearchName" -SourceMailboxes "user@domain.com" -SearchQuery "Subject:'Important Meeting'" -TargetMailbox "admin@domain.com" -TargetFolder "SearchResults"
 ```
 
-### Clear transport logs
+### Очистка логов транспорта
 ```powershell
 Set-TransportService -Identity "EXCH01" -MessageTrackingLogMaxAge 30.00:00:00
 ```
 
-### View virtual directory configuration
+### Просмотр конфигурации виртуальных директорий
 ```powershell
 Get-OwaVirtualDirectory | ft Name, Server, InternalUrl, ExternalUrl
 Get-ActiveSyncVirtualDirectory | ft Name, Server, InternalUrl, ExternalUrl
@@ -351,18 +347,18 @@ Get-ActiveSyncVirtualDirectory | ft Name, Server, InternalUrl, ExternalUrl
 
 ---
 
-## Notes
+## Примечания
 
-- Replace `dc.example.com` with your domain controller
-- Replace `Name_DB` with your database name
-- Replace `domain.com` with your domain
-- Always test commands in a test environment before applying in production
-- Regularly create backups before performing critical operations
+- Замените `dc.example.com` на ваш контроллер домена
+- Замените `Name_DB` на имя вашей базы данных
+- Замените `domain.com` на ваш домен
+- Всегда тестируйте команды в тестовой среде перед применением в продакшене
+- Регулярно создавайте резервные копии перед выполнением критических операций
 
-## Connecting to Exchange Management Shell
+## Подключение к Exchange Management Shell
 
 ```powershell
 Add-PSSnapin Microsoft.Exchange.Management.PowerShell.SnapIn
 ```
 
-Or use Exchange Management Shell directly from the Start menu.
+Или используйте Exchange Management Shell напрямую из меню "Пуск".
