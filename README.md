@@ -1,8 +1,6 @@
 # Exchange Server 2016 - Scripts and PowerShell Commands Repository
 
-[🇷🇺 Русская версия](README.ru.md)
-
-## Languages / Языки
+**Languages / Языки:**
 - [🇷🇺 Русский](README.ru.md)
 - [🇺🇸 English](README.md) (current)
 
