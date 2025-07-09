@@ -306,26 +306,6 @@ UserParameter=exchange.db.size[*],powershell.exe -NoProfile -ExecutionPolicy Byp
 3. **Test in lab environment** - Always test before production use
 4. **Community support** - Submit issues for help and improvements
 
-## 📜 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 📞 Contact
-
-For questions, issues, or contributions:
-
-- **Documentation**: Check the README files in each directory
-- **Issues**: Use the GitHub issue tracker
-- **Contributions**: Submit pull requests with detailed descriptions
-- **Support**: Review troubleshooting guides in each script's documentation
-
-## 🏆 Acknowledgments
-
-- Microsoft Exchange Server documentation
-- PowerShell community best practices
-- Zabbix monitoring community
-- Exchange Server administrators worldwide
-
 ---
 
 **⚠️ Disclaimer**: These scripts are provided "as is" without warranty. Always test in a non-production environment before deploying to production systems. Create backups before running any maintenance operations.
