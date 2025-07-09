@@ -1,323 +1,338 @@
-# Exchange Server 2016 - Репозиторий скриптов и команд PowerShell
+# Exchange Server 2016 - Scripts and PowerShell Commands Repository
 
-[🇺🇸 English version](README.en.md)
+[🇷🇺 Русская версия](README.ru.md)
 
-## Языки / Languages
-- [🇷🇺 Русский](README.md) (текущий)
-- [🇺🇸 English](README.en.md)
+## Languages / Языки
+- [🇷🇺 Русский](README.ru.md)
+- [🇺🇸 English](README.md) (current)
 
+Comprehensive collection of PowerShell scripts and commands for Exchange Server 2016/2019 administration, automation, and maintenance.
 
-Полная коллекция PowerShell скриптов и команд для администрирования, автоматизации и обслуживания Exchange Server 2016/2019.
+## 🚀 Overview
 
-## 🚀 Обзор
+This repository contains a complete toolkit for Exchange Server administrators, featuring:
 
-Данный репозиторий содержит полный набор инструментов для администраторов Exchange Server:
+- **PowerShell Command Reference** - Essential commands for daily operations
+- **Automation Scripts** - Production-ready scripts for complex tasks
+- **Monitoring Tools** - Real-time monitoring and alerting solutions
+- **Migration Utilities** - Safe and efficient mailbox migration tools
+- **Maintenance Scripts** - Database defragmentation and log cleanup tools
 
-- **Справочник команд PowerShell** - Основные команды для ежедневных операций
-- **Скрипты автоматизации** - Готовые к использованию скрипты для сложных задач
-- **Инструменты мониторинга** - Мониторинг в реальном времени и система оповещений
-- **Утилиты миграции** - Безопасные и эффективные инструменты миграции почтовых ящиков
-- **Скрипты обслуживания** - Дефрагментация баз данных и очистка логов
-
-## 📁 Структура репозитория
+## 📁 Repository Structure
 
 ```
 exchange-server-2016/
-├── README.md                           # Этот файл
-├── powershell/                         # Справочник команд PowerShell
-│   └── README.md                       # Полный справочник команд
-├── scripts/                            # Скрипты автоматизации
-│   ├── db/                            # Мониторинг баз данных
-│   │   ├── exchange_db_discovery.ps1  # Скрипт мониторинга Zabbix
-│   │   ├── databases_info.json        # Кеш файл баз данных
-│   │   └── README.md                  # Руководство по мониторингу БД
-│   ├── defrag/                        # Дефрагментация баз данных
-│   │   ├── defrag_db.ps1              # Скрипт дефрагментации БД
-│   │   └── README.md                  # Руководство по дефрагментации
-│   ├── logs/                          # Управление логами
-│   │   ├── ExchangeLogCleanup.ps1     # Очистка логов транзакций
-│   │   └── README.md                  # Руководство по очистке логов
-│   └── migration/                     # Миграция почтовых ящиков
+├── README.md                           # This file
+├── powershell/                         # PowerShell commands reference
+│   └── README.md                       # Complete command reference
+├── scripts/                            # Automation scripts
+│   ├── db/                            # Database monitoring
+│   │   ├── exchange_db_discovery.ps1  # Zabbix monitoring script
+│   │   ├── databases_info.json        # Database cache file
+│   │   └── README.md                  # Database monitoring guide
+│   ├── defrag/                        # Database defragmentation
+│   │   ├── defrag_db.ps1              # Database defrag script
+│   │   └── README.md                  # Defragmentation guide
+│   ├── logs/                          # Log management
+│   │   ├── ExchangeLogCleanup.ps1     # Transaction log cleanup
+│   │   └── README.md                  # Log cleanup guide
+│   └── migration/                     # Mailbox migration
 │       ├── Email_PrimaryOnly_Migrations.ps1
 │       ├── Email_ArchiveOnly_Migrations.ps1
 │       ├── Migration_Monitor.ps1
 │       ├── EmailList.txt
-│       └── README.md                  # Руководство по миграции
+│       └── README.md                  # Migration guide
 ```
 
-## 🔧 Быстрый старт
+## 🔧 Quick Start
 
-### Требования
+### Prerequisites
 
-- Exchange Server 2016 или 2019
-- PowerShell 5.0 или выше
+- Exchange Server 2016 or 2019
+- PowerShell 5.0 or higher
 - Exchange Management Shell
-- Права администратора
+- Administrator privileges
 
-### Установка
+### Installation
 
-1. **Клонирование репозитория:**
+1. **Clone the repository:**
    ```bash
-   git clone https://github.com/alexdenpasar/exchange-server.git
-   cd exchange-server
+   git clone https://github.com/your-org/exchange-server-2016.git
+   cd exchange-server-2016
    ```
 
-2. **Настройка политики выполнения:**
+2. **Set execution policy:**
    ```powershell
    Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
    ```
 
-3. **Загрузка Exchange Management Shell:**
+3. **Load Exchange Management Shell:**
    ```powershell
    Add-PSSnapin Microsoft.Exchange.Management.PowerShell.SnapIn
    ```
 
-## 📚 Документация
+## 📚 Documentation
 
-### [Справочник команд PowerShell](powershell/README.md)
-Полный справочник с более чем 100 основными командами Exchange PowerShell, организованными по категориям:
+### [PowerShell Commands Reference](powershell/README.md)
+Complete reference guide with over 100 essential Exchange PowerShell commands organized by category:
 
-- **Миграция** - Команды миграции почтовых ящиков и архивов
-- **Управление БД** - Операции с базами данных и обслуживание
-- **Управление ящиками** - Администрирование пользовательских ящиков
-- **Группы рассылки** - Управление группами и членством
-- **Общие папки** - Администрирование общих папок
-- **Правила транспорта** - Правила почтового потока и безопасности
-- **Мониторинг** - Мониторинг здоровья системы и производительности
-- **Сертификаты** - Управление SSL/TLS сертификатами
-- **Резервное копирование** - Операции защиты данных
+- **Migration** - Mailbox and archive migration commands
+- **Database Management** - Database operations and maintenance
+- **Mailbox Management** - User mailbox administration
+- **Distribution Groups** - Group management and membership
+- **Public Folders** - Shared folder administration
+- **Transport Rules** - Mail flow and security rules
+- **Monitoring** - System health and performance monitoring
+- **Certificates** - SSL/TLS certificate management
+- **Backup/Restore** - Data protection operations
 
-### Документация скриптов
+### Script Documentation
 
-#### [Мониторинг баз данных](scripts/db/README.md)
-- **Exchange JSON Manager** - Интеграция с Zabbix для мониторинга БД
-- Мониторинг статуса и размера баз данных в реальном времени
-- Автоматические оповещения и отчеты
-- Система кеширования для оптимизации производительности
+#### [Database Monitoring](scripts/db/README.md)
+- **Exchange JSON Manager** - Zabbix integration for database monitoring
+- Real-time database status and size monitoring
+- Automated alerts and reporting
+- Caching system for performance optimization
 
-#### [Дефрагментация баз данных](scripts/defrag/README.md)
-- **Автоматическая дефрагментация БД** - Безопасная офлайн дефрагментация
-- Оптимизация дискового пространства после миграций ящиков
-- Автоматическое управление службами и восстановление
-- Комплексное логирование и обработка ошибок
+#### [Database Defragmentation](scripts/defrag/README.md)
+- **Automated Database Defragmentation** - Safe offline defragmentation
+- Disk space optimization after mailbox migrations
+- Automatic service management and recovery
+- Comprehensive logging and error handling
 
-#### [Управление логами](scripts/logs/README.md)
-- **Очистка логов Exchange** - Автоматическая очистка логов транзакций
-- Безопасное удаление логов с проверкой состояния БД
-- Настраиваемые политики хранения
-- Определение Clean/Dirty shutdown
+#### [Log Management](scripts/logs/README.md)
+- **Exchange Log Cleanup** - Automated transaction log cleanup
+- Safe log deletion with database state verification
+- Configurable retention policies
+- Clean/Dirty shutdown detection
 
-#### [Инструменты миграции](scripts/migration/README.md)
-- **Миграция основных ящиков** - Массовая миграция с параллелизацией
-- **Миграция только архивов** - Отдельная миграция архивов для производительности
-- **Монитор миграции** - Отслеживание статуса миграций в реальном времени
-- Продвинутая обработка ошибок и механизмы восстановления
+#### [Migration Tools](scripts/migration/README.md)
+- **Primary Mailbox Migration** - Bulk mailbox migration with parallelization
+- **Archive-Only Migration** - Separate archive migration for performance
+- **Migration Monitor** - Real-time migration status tracking
+- Advanced error handling and recovery mechanisms
 
-## 🛠️ Ключевые возможности
+## 🛠️ Key Features
 
-### Готовые к продакшену скрипты
-- ✅ **Обработка ошибок** - Комплексное обнаружение и восстановление после ошибок
-- ✅ **Логирование** - Подробные логи операций с временными метками
-- ✅ **Проверки безопасности** - Валидация и подтверждение перед выполнением
-- ✅ **Поддержка отката** - Автоматическое восстановление после сбоев
+### Production-Ready Scripts
+- ✅ **Error Handling** - Comprehensive error detection and recovery
+- ✅ **Logging** - Detailed operation logs with timestamps
+- ✅ **Safety Checks** - Pre-execution validation and confirmation
+- ✅ **Rollback Support** - Automatic recovery from failures
 
-### Мониторинг и оповещения
-- ✅ **Интеграция с Zabbix** - Нативная поддержка систем мониторинга
-- ✅ **Статус в реальном времени** - Живой мониторинг миграций и системы
-- ✅ **Метрики производительности** - Размер БД, статус монтирования и здоровье
-- ✅ **Автоматические оповещения** - Email уведомления о критических событиях
+### Monitoring & Alerting
+- ✅ **Zabbix Integration** - Native monitoring system support
+- ✅ **Real-time Status** - Live migration and system monitoring
+- ✅ **Performance Metrics** - Database size, mount status, and health
+- ✅ **Automated Alerts** - Email notifications for critical events
 
-### Превосходство в миграции
-- ✅ **Параллельная обработка** - Настраиваемые лимиты одновременных миграций
-- ✅ **Отслеживание прогресса** - Мониторинг прогресса миграций в реальном времени
-- ✅ **Обнаружение зависших миграций** - Автоматическое обнаружение и перезапуск
-- ✅ **Пакетные операции** - Массовая миграция из списков email
+### Migration Excellence
+- ✅ **Parallel Processing** - Configurable concurrent migration limits
+- ✅ **Progress Tracking** - Real-time migration progress monitoring
+- ✅ **Hung Migration Detection** - Automatic detection and restart
+- ✅ **Batch Operations** - Bulk migration from email lists
 
-### Автоматизация обслуживания
-- ✅ **Запланированные операции** - Интеграция с планировщиком задач
-- ✅ **Оптимизация БД** - Автоматизированные процессы дефрагментации
-- ✅ **Очистка логов** - Интеллектуальное управление логами транзакций
-- ✅ **Мониторинг здоровья** - Непрерывные проверки здоровья системы
+### Maintenance Automation
+- ✅ **Scheduled Operations** - Task Scheduler integration
+- ✅ **Database Optimization** - Automated defragmentation workflows
+- ✅ **Log Cleanup** - Intelligent transaction log management
+- ✅ **Health Monitoring** - Continuous system health checks
 
-## 🎯 Типичные сценарии использования
+## 🎯 Common Use Cases
 
-### Ежедневные операции
+### Daily Operations
 ```powershell
-# Проверка статуса баз данных
+# Check database status
 Get-MailboxDatabase | ft Name, Server, Mounted, DatabaseSize
 
-# Мониторинг активных миграций
+# Monitor active migrations
 .\scripts\migration\Migration_Monitor.ps1
 
-# Просмотр статистики ящиков
+# View mailbox statistics
 Get-MailboxStatistics | Sort-Object TotalItemSize -Descending | Select-Object -First 10
 ```
 
-### Задачи обслуживания
+### Maintenance Tasks
 ```powershell
-# Запуск дефрагментации базы данных
+# Run database defragmentation
 .\scripts\defrag\defrag_db.ps1
 
-# Очистка старых логов транзакций
+# Clean up old transaction logs
 .\scripts\logs\ExchangeLogCleanup.ps1
 
-# Обновление кеша мониторинга
+# Update monitoring cache
 .\scripts\db\exchange_db_discovery.ps1 -Action forceupdate
 ```
 
-### Проекты миграции
+### Migration Projects
 ```powershell
-# Запуск миграции основных ящиков
+# Start primary mailbox migration
 .\scripts\migration\Email_PrimaryOnly_Migrations.ps1
 
-# Мониторинг прогресса миграции
+# Monitor migration progress
 .\scripts\migration\Migration_Monitor.ps1
 
-# Отдельная миграция архивов
+# Migrate archives separately
 .\scripts\migration\Email_ArchiveOnly_Migrations.ps1
 ```
 
-## 📊 Интеграция с системами мониторинга
+## 📊 Monitoring Integration
 
-### Шаблоны Zabbix
-Репозиторий включает полную интеграцию с Zabbix:
+### Zabbix Templates
+The repository includes complete Zabbix integration:
 
 ```ini
-# Добавить в zabbix_agentd.conf
+# Add to zabbix_agentd.conf
 UserParameter=exchange.db.discovery,powershell.exe -NoProfile -ExecutionPolicy Bypass -File "C:\Scripts\db\exchange_db_discovery.ps1" -Action discovery
 UserParameter=exchange.db.mounted[*],powershell.exe -NoProfile -ExecutionPolicy Bypass -File "C:\Scripts\db\exchange_db_discovery.ps1" -Action mounted -DatabaseName "$1"
 UserParameter=exchange.db.size[*],powershell.exe -NoProfile -ExecutionPolicy Bypass -File "C:\Scripts\db\exchange_db_discovery.ps1" -Action size -DatabaseName "$1"
 ```
 
-### Метрики производительности
-- Статус монтирования и здоровье баз данных
-- Размер баз данных и тенденции роста
-- Прогресс миграций и показатели завершения
-- Мониторинг накопления логов транзакций
+### Performance Metrics
+- Database mount status and health
+- Database size and growth trends
+- Migration progress and completion rates
+- Transaction log accumulation monitoring
 
-## 🔐 Лучшие практики безопасности
+## 🔐 Security Best Practices
 
-### Разрешения
-- Используйте выделенные сервисные учетные записи с минимальными необходимыми привилегиями
-- Реализуйте ролевое управление доступом (RBAC)
-- Регулярный аудит административного доступа
+### Permissions
+- Use dedicated service accounts with minimal required privileges
+- Implement role-based access control (RBAC)
+- Regular audit of administrative access
 
-### Логирование и аудит
-- Все скрипты включают комплексное логирование
-- Конфиденциальная информация никогда не логируется
-- Журналы аудита для всех административных действий
+### Logging & Auditing
+- All scripts include comprehensive logging
+- Sensitive information is never logged
+- Audit trails for all administrative actions
 
-### Защита данных
-- Валидация резервных копий перед выполнением
-- Автоматические возможности отката
-- Безопасные режимы отказа с восстановлением служб
+### Data Protection
+- Pre-execution backup validation
+- Automatic rollback capabilities
+- Safe failure modes with service recovery
 
-## 📈 Оптимизация производительности
+## 📈 Performance Optimization
 
-### Производительность миграции
-- Настраиваемые лимиты параллельных миграций
-- Автоматическая балансировка нагрузки между базами данных
-- Оптимизация сетевого и дискового ввода/вывода
+### Migration Performance
+- Configurable parallel migration limits
+- Automatic load balancing across databases
+- Network and disk I/O optimization
 
-### Оптимизация базы данных
-- Автоматическое планирование дефрагментации
-- Интеллектуальные политики очистки логов
-- Проактивное управление пространством
+### Database Optimization
+- Automated defragmentation scheduling
+- Intelligent log cleanup policies
+- Proactive space management
 
-### Эффективность мониторинга
-- Кешированный сбор данных для снижения нагрузки на сервер
-- Оптимизированные паттерны запросов
-- Минимальное влияние интервалов мониторинга
+### Monitoring Efficiency
+- Cached data collection for reduced server load
+- Optimized query patterns
+- Minimal impact monitoring intervals
 
-## 🤝 Участие в разработке
+## 🤝 Contributing
 
-### Стандарты кода
-- Следуйте лучшим практикам PowerShell
-- Включайте комплексную обработку ошибок
-- Документируйте все параметры и функции
-- Предоставляйте примеры использования
+### Code Standards
+- Follow PowerShell best practices
+- Include comprehensive error handling
+- Document all parameters and functions
+- Provide usage examples
 
-### Требования к тестированию
-- Тестируйте в непродакшн среде в первую очередь
-- Валидируйте с разными версиями Exchange
-- Тестирование производительности с большими наборами данных
-- Обновление документации для новых функций
+### Testing Requirements
+- Test in non-production environments first
+- Validate with different Exchange versions
+- Performance testing with large datasets
+- Documentation updates for new features
 
-### Процесс Pull Request
-1. Сделайте fork репозитория
-2. Создайте ветку для функции
-3. Реализуйте изменения с тестами
-4. Обновите документацию
-5. Отправьте pull request с подробным описанием
+### Pull Request Process
+1. Fork the repository
+2. Create a feature branch
+3. Implement changes with tests
+4. Update documentation
+5. Submit pull request with detailed description
 
-## 📋 История изменений
+## 📋 Changelog
 
-### Версия 2.0.0 (Текущая)
-- ✅ Полное переделывание скриптов миграции
-- ✅ Улучшенный мониторинг с интеграцией Zabbix
-- ✅ Улучшенная обработка ошибок и логирование
-- ✅ Добавлена автоматизация дефрагментации баз данных
-- ✅ Комплексное обновление документации
+### Version 2.0.0 (Current)
+- ✅ Complete migration script redesign
+- ✅ Enhanced monitoring with Zabbix integration
+- ✅ Improved error handling and logging
+- ✅ Added database defragmentation automation
+- ✅ Comprehensive documentation updates
 
-### Версия 1.5.0
-- ✅ Добавлены инструменты мониторинга миграций
-- ✅ Реализованы элементы управления параллельными миграциями
-- ✅ Улучшена функциональность очистки логов
+### Version 1.5.0
+- ✅ Added migration monitoring tools
+- ✅ Implemented parallel migration controls
+- ✅ Enhanced log cleanup functionality
 
-### Версия 1.0.0
-- ✅ Первоначальная коллекция команд PowerShell
-- ✅ Базовые скрипты миграции
-- ✅ Простые инструменты мониторинга
+### Version 1.0.0
+- ✅ Initial PowerShell command collection
+- ✅ Basic migration scripts
+- ✅ Simple monitoring tools
 
-## 🆘 Поддержка и устранение неполадок
+## 🆘 Support & Troubleshooting
 
-### Частые проблемы
+### Common Issues
 
-1. **Ошибки отказа в доступе**
+1. **Permission Denied Errors**
    ```powershell
-   # Проверка разрешений Exchange
+   # Check Exchange permissions
    Get-ManagementRoleAssignment -RoleAssignee "username"
    
-   # Добавление необходимых разрешений
+   # Add required permissions
    New-ManagementRoleAssignment -Role "Mailbox Import Export" -User "username"
    ```
 
-2. **Сбои миграции**
+2. **Migration Failures**
    ```powershell
-   # Проверка статуса миграции
+   # Check migration status
    Get-MoveRequest | Get-MoveRequestStatistics | ft DisplayName, Status, PercentComplete
    
-   # Перезапуск неудачных миграций
+   # Restart failed migrations
    Get-MoveRequest -MoveStatus Failed | Resume-MoveRequest
    ```
 
-3. **Проблемы с монтированием базы данных**
+3. **Database Mount Issues**
    ```powershell
-   # Проверка состояния базы данных
+   # Check database state
    eseutil /mh "C:\Database\DB.edb"
    
-   # Принудительное монтирование при необходимости
+   # Force mount if needed
    Mount-Database -Identity "DB01" -Force
    ```
 
-### Получение помощи
+### Getting Help
 
-1. **Проверьте логи** - Все скрипты генерируют подробные логи
-2. **Изучите документацию** - Каждый скрипт имеет подробный README
-3. **Тестируйте в лабораторной среде** - Всегда тестируйте перед использованием в продакшене
-4. **Поддержка сообщества** - Отправляйте issues для получения помощи и улучшений
+1. **Check the logs** - All scripts generate detailed logs
+2. **Review documentation** - Each script has comprehensive README
+3. **Test in lab environment** - Always test before production use
+4. **Community support** - Submit issues for help and improvements
 
-## 📜 Лицензия
+## 📜 License
 
-Свободное распространение
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 📞 Contact
+
+For questions, issues, or contributions:
+
+- **Documentation**: Check the README files in each directory
+- **Issues**: Use the GitHub issue tracker
+- **Contributions**: Submit pull requests with detailed descriptions
+- **Support**: Review troubleshooting guides in each script's documentation
+
+## 🏆 Acknowledgments
+
+- Microsoft Exchange Server documentation
+- PowerShell community best practices
+- Zabbix monitoring community
+- Exchange Server administrators worldwide
 
 ---
 
-**⚠️ Отказ от ответственности**: Эти скрипты предоставляются "как есть" без гарантий. Всегда тестируйте в непродакшн среде перед развертыванием в продакшн системах. Создавайте резервные копии перед запуском любых операций обслуживания.
+**⚠️ Disclaimer**: These scripts are provided "as is" without warranty. Always test in a non-production environment before deploying to production systems. Create backups before running any maintenance operations.
 
-**📚 Быстрые ссылки**:
-- [Команды PowerShell](powershell/README.md)
-- [Мониторинг баз данных](scripts/db/README.md)
-- [Инструменты миграции](scripts/migration/README.md)
-- [Руководство по дефрагментации](scripts/defrag/README.md)
-- [Управление логами](scripts/logs/README.md)
+**📚 Quick Links**:
+- [PowerShell Commands](powershell/README.md)
+- [Database Monitoring](scripts/db/README.md)
+- [Migration Tools](scripts/migration/README.md)
+- [Defragmentation Guide](scripts/defrag/README.md)
+- [Log Management](scripts/logs/README.md)
