@@ -1,5 +1,12 @@
 # Exchange Server 2016 - Репозиторий скриптов и команд PowerShell
 
+[🇺🇸 English version](README.en.md)
+
+## Языки / Languages
+- [🇷🇺 Русский](README.md) (текущий)
+- [🇺🇸 English](README.en.md)
+
+
 Полная коллекция PowerShell скриптов и команд для администрирования, автоматизации и обслуживания Exchange Server 2016/2019.
 
 ## 🚀 Обзор
