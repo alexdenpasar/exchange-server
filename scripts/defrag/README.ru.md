@@ -1,6 +1,6 @@
 # Exchange 2016 Database Defragmentation Script
 
-## Языки / Languages
+**Языки / Languages:**
 - [🇷🇺 Русский](README.ru.md) ← (Текущий)
 - [🇺🇸 English](README.md)
 

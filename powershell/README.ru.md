@@ -1,6 +1,6 @@
 # Exchange Server 2016 - Справочник команд PowerShell
 
-## Языки / Languages
+**Языки / Languages:**
 - [🇷🇺 Русский](README.ru.md) ← (Текущий)
 - [🇺🇸 English](README.md)
 
