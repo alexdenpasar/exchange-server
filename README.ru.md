@@ -1,368 +1,336 @@
-# Exchange Server 2016 - PowerShell Commands Reference
+# Exchange Server 2016 - Репозиторий скриптов и команд PowerShell
 
-**Languages / Языки:**
-- [🇺🇸 English](README.md) ← (Current)
-- [🇷🇺 Русский](README.ru.md)
+## Языки / Languages
+- [🇷🇺 Русский](README.ru.md) ← (Текущий)
+- [🇺🇸 English](README.md)
 
----
+Полная коллекция PowerShell скриптов и команд для администрирования, автоматизации и обслуживания Exchange Server 2016/2019.
 
-## Migration
+## 🚀 Обзор
 
-### Request to move mailbox to another database (with archive)
+Данный репозиторий содержит полный набор инструментов для администраторов Exchange Server:
+
+- **Справочник команд PowerShell** - Основные команды для ежедневных операций
+- **Скрипты автоматизации** - Готовые к использованию скрипты для сложных задач
+- **Инструменты мониторинга** - Мониторинг в реальном времени и система оповещений
+- **Утилиты миграции** - Безопасные и эффективные инструменты миграции почтовых ящиков
+- **Скрипты обслуживания** - Дефрагментация баз данных и очистка логов
+
+## 📁 Структура репозитория
+
+```
+exchange-server-2016/
+├── README.md                           # Этот файл
+├── powershell/                         # Справочник команд PowerShell
+│   └── README.md                       # Полный справочник команд
+├── scripts/                            # Скрипты автоматизации
+│   ├── db/                            # Мониторинг баз данных
+│   │   ├── exchange_db_discovery.ps1  # Скрипт мониторинга Zabbix
+│   │   ├── databases_info.json        # Кеш файл баз данных
+│   │   └── README.md                  # Руководство по мониторингу БД
+│   ├── defrag/                        # Дефрагментация баз данных
+│   │   ├── defrag_db.ps1              # Скрипт дефрагментации БД
+│   │   └── README.md                  # Руководство по дефрагментации
+│   ├── logs/                          # Управление логами
+│   │   ├── ExchangeLogCleanup.ps1     # Очистка логов транзакций
+│   │   └── README.md                  # Руководство по очистке логов
+│   └── migration/                     # Миграция почтовых ящиков
+│       ├── Email_PrimaryOnly_Migrations.ps1
+│       ├── Email_ArchiveOnly_Migrations.ps1
+│       ├── Migration_Monitor.ps1
+│       ├── EmailList.txt
+│       └── README.md                  # Руководство по миграции
+```
+
+## 🔧 Быстрый старт
+
+### Требования
+
+- Exchange Server 2016 или 2019
+- PowerShell 5.0 или выше
+- Exchange Management Shell
+- Права администратора
+
+### Установка
+
+1. **Клонирование репозитория:**
+   ```bash
+   git clone https://github.com/your-org/exchange-server-2016.git
+   cd exchange-server-2016
+   ```
+
+2. **Настройка политики выполнения:**
+   ```powershell
+   Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+   ```
+
+3. **Загрузка Exchange Management Shell:**
+   ```powershell
+   Add-PSSnapin Microsoft.Exchange.Management.PowerShell.SnapIn
+   ```
+
+## 📚 Документация
+
+### [Справочник команд PowerShell](powershell/README.md)
+Полный справочник с более чем 100 основными командами Exchange PowerShell, организованными по категориям:
+
+- **Миграция** - Команды миграции почтовых ящиков и архивов
+- **Управление БД** - Операции с базами данных и обслуживание
+- **Управление ящиками** - Администрирование пользовательских ящиков
+- **Группы рассылки** - Управление группами и членством
+- **Общие папки** - Администрирование общих папок
+- **Правила транспорта** - Правила почтового потока и безопасности
+- **Мониторинг** - Мониторинг здоровья системы и производительности
+- **Сертификаты** - Управление SSL/TLS сертификатами
+- **Резервное копирование** - Операции защиты данных
+
+### Документация скриптов
+
+#### [Мониторинг баз данных](scripts/db/README.md)
+- **Exchange JSON Manager** - Интеграция с Zabbix для мониторинга БД
+- Мониторинг статуса и размера баз данных в реальном времени
+- Автоматические оповещения и отчеты
+- Система кеширования для оптимизации производительности
+
+#### [Дефрагментация баз данных](scripts/defrag/README.md)
+- **Автоматическая дефрагментация БД** - Безопасная офлайн дефрагментация
+- Оптимизация дискового пространства после миграций ящиков
+- Автоматическое управление службами и восстановление
+- Комплексное логирование и обработка ошибок
+
+#### [Управление логами](scripts/logs/README.md)
+- **Очистка логов Exchange** - Автоматическая очистка логов транзакций
+- Безопасное удаление логов с проверкой состояния БД
+- Настраиваемые политики хранения
+- Определение Clean/Dirty shutdown
+
+#### [Инструменты миграции](scripts/migration/README.md)
+- **Миграция основных ящиков** - Массовая миграция с параллелизацией
+- **Миграция только архивов** - Отдельная миграция архивов для производительности
+- **Монитор миграции** - Отслеживание статуса миграций в реальном времени
+- Продвинутая обработка ошибок и механизмы восстановления
+
+## 🛠️ Ключевые возможности
+
+### Готовые к продакшену скрипты
+- ✅ **Обработка ошибок** - Комплексное обнаружение и восстановление после ошибок
+- ✅ **Логирование** - Подробные логи операций с временными метками
+- ✅ **Проверки безопасности** - Валидация и подтверждение перед выполнением
+- ✅ **Поддержка отката** - Автоматическое восстановление после сбоев
+
+### Мониторинг и оповещения
+- ✅ **Интеграция с Zabbix** - Нативная поддержка систем мониторинга
+- ✅ **Статус в реальном времени** - Живой мониторинг миграций и системы
+- ✅ **Метрики производительности** - Размер БД, статус монтирования и здоровье
+- ✅ **Автоматические оповещения** - Email уведомления о критических событиях
+
+### Превосходство в миграции
+- ✅ **Параллельная обработка** - Настраиваемые лимиты одновременных миграций
+- ✅ **Отслеживание прогресса** - Мониторинг прогресса миграций в реальном времени
+- ✅ **Обнаружение зависших миграций** - Автоматическое обнаружение и перезапуск
+- ✅ **Пакетные операции** - Массовая миграция из списков email
+
+### Автоматизация обслуживания
+- ✅ **Запланированные операции** - Интеграция с планировщиком задач
+- ✅ **Оптимизация БД** - Автоматизированные процессы дефрагментации
+- ✅ **Очистка логов** - Интеллектуальное управление логами транзакций
+- ✅ **Мониторинг здоровья** - Непрерывные проверки здоровья системы
+
+## 🎯 Типичные сценарии использования
+
+### Ежедневные операции
 ```powershell
-New-MoveRequest -Identity "email@example.com" -DomainController "dc.example.com" -TargetDatabase "Name_DB" -BadItemLimit 1 -AcceptLargeDataLoss -ErrorAction Stop
-```
-
-### Move only primary mailbox to another database without archive
-```powershell
-New-MoveRequest -Identity "email@example.com" -DomainController "dc.example.com" -TargetDatabase "Name_DB" -BadItemLimit 3 -AcceptLargeDataLoss -PrimaryOnly -ErrorAction Stop
-```
-
-### Move only archive to another database
-```powershell
-New-MoveRequest -Identity "email@example.com" -DomainController "dc.example.com" -ArchiveOnly -ArchiveTargetDatabase "Name_DB-Archive"
-```
-
-### View active migrations
-```powershell
-Get-MoveRequest -DomainController "dc.example.com" -ErrorAction SilentlyContinue | Where-Object { $_.TargetDatabase -eq "Name_DB" }
-```
-
-### View status of all migrations
-```powershell
-Get-MoveRequest | Get-MoveRequestStatistics | ft DisplayName, Status, PercentComplete, TotalMailboxSize
-```
-
-### Remove completed and failed migrations
-```powershell
-Remove-MoveRequest -Identity "email@example.com" -DomainController "dc.example.com" -Confirm:$false -ErrorAction SilentlyContinue
-```
-
-### Suspend migration
-```powershell
-Suspend-MoveRequest -Identity "email@example.com" -SuspendComment "Suspended for maintenance"
-```
-
-### Resume migration
-```powershell
-Resume-MoveRequest -Identity "email@example.com"
-```
-
-## Database Management
-
-### Dismount database
-```powershell
-Dismount-Database "Name_DB" -Confirm:$false
-```
-
-### Mount database
-```powershell
-Mount-Database "Name_DB" -Confirm:$false
-```
-
-### Check database status
-```cmd
-eseutil /mh D:\mailbox\db.edb
-```
-
-### Check database logs (must be in database folder)
-```cmd
-eseutil /ml E00
-```
-
-### Restore database from logs (must be in database folder)
-```cmd
-eseutil /r E00
-```
-
-### Hard recovery of database
-```cmd
-eseutil /p D:\mailbox\db.edb
-```
-
-### Defragment database after deleting/moving mailboxes
-```cmd
-eseutil /d D:\mailbox\db.edb
-```
-
-### Check database for errors and repair
-```powershell
-New-MailboxRepairRequest -Database "Name_DB" -CorruptionType SearchFolder,AggregateCounts,ProvisionedFolder,FolderView
-```
-
-### Track progress of database integrity check
-```powershell
-Get-MailboxRepairRequest -Database "Name_DB"
-```
-
-### View mailboxes in database
-```powershell
-Get-MailboxStatistics -Database "Name_DB" -DomainController "dc.example.com" | ft DisplayName, TotalItemSize, ItemCount
-Get-MailboxStatistics -Database "Name_DB" -DomainController "dc.example.com" | ft DisplayName, TotalItemSize
-```
-
-### View where mailbox archive is located
-```powershell
-Get-Mailbox -Identity "email@example.com" -DomainController "dc.example.com" -Archive | Select-Object DisplayName, ArchiveDatabase
-```
-
-### More detailed view
-```powershell
-Get-Mailbox -Database "Name_DB" -DomainController "dc.example.com" -Archive | Select-Object DisplayName, Alias, ArchiveDatabase
-```
-
-### View all databases and their status
-```powershell
+# Проверка статуса баз данных
 Get-MailboxDatabase | ft Name, Server, Mounted, DatabaseSize
+
+# Мониторинг активных миграций
+.\scripts\migration\Migration_Monitor.ps1
+
+# Просмотр статистики ящиков
+Get-MailboxStatistics | Sort-Object TotalItemSize -Descending | Select-Object -First 10
 ```
 
-### Create new database
+### Задачи обслуживания
 ```powershell
-New-MailboxDatabase -Name "NewDB" -EdbFilePath "D:\mailbox\NewDB.edb" -LogFolderPath "D:\logs\NewDB"
+# Запуск дефрагментации базы данных
+.\scripts\defrag\defrag_db.ps1
+
+# Очистка старых логов транзакций
+.\scripts\logs\ExchangeLogCleanup.ps1
+
+# Обновление кеша мониторинга
+.\scripts\db\exchange_db_discovery.ps1 -Action forceupdate
 ```
 
-## Mailbox Management
-
-### Grant full access to mailbox
+### Проекты миграции
 ```powershell
-Add-MailboxPermission -Identity "mailbox_user@domain.com" -User "your_user@domain.com" -DomainController "dc.example.com" -AccessRights FullAccess -InheritanceType All
+# Запуск миграции основных ящиков
+.\scripts\migration\Email_PrimaryOnly_Migrations.ps1
+
+# Мониторинг прогресса миграции
+.\scripts\migration\Migration_Monitor.ps1
+
+# Отдельная миграция архивов
+.\scripts\migration\Email_ArchiveOnly_Migrations.ps1
 ```
 
-### Grant send on behalf permission
-```powershell
-Set-Mailbox -Identity "mailbox_user@domain.com" -DomainController "dc.example.com" -GrantSendOnBehalfTo "your_user@domain.com"
+## 📊 Интеграция с системами мониторинга
+
+### Шаблоны Zabbix
+Репозиторий включает полную интеграцию с Zabbix:
+
+```ini
+# Добавить в zabbix_agentd.conf
+UserParameter=exchange.db.discovery,powershell.exe -NoProfile -ExecutionPolicy Bypass -File "C:\Scripts\db\exchange_db_discovery.ps1" -Action discovery
+UserParameter=exchange.db.mounted[*],powershell.exe -NoProfile -ExecutionPolicy Bypass -File "C:\Scripts\db\exchange_db_discovery.ps1" -Action mounted -DatabaseName "$1"
+UserParameter=exchange.db.size[*],powershell.exe -NoProfile -ExecutionPolicy Bypass -File "C:\Scripts\db\exchange_db_discovery.ps1" -Action size -DatabaseName "$1"
 ```
 
-### Allow send as
-```powershell
-Add-ADPermission -Identity "mailbox_user" -User "your_user" -DomainController "dc.example.com" -ExtendedRights "Send As"
-```
+### Метрики производительности
+- Статус монтирования и здоровье баз данных
+- Размер баз данных и тенденции роста
+- Прогресс миграций и показатели завершения
+- Мониторинг накопления логов транзакций
 
-### View permissions on mailbox
-```powershell
-Get-MailboxPermission -Identity "ceo@domain.com" -DomainController "dc.example.com" | Where-Object { $_.User -like "*alex*" }
-```
+## 🔐 Лучшие практики безопасности
 
-### Remove permissions (FullAccess example)
-```powershell
-Remove-MailboxPermission -Identity "ceo@domain.com" -User "alex@domain.com" -DomainController "dc.example.com" -AccessRights FullAccess -InheritanceType All
-```
+### Разрешения
+- Используйте выделенные сервисные учетные записи с минимальными необходимыми привилегиями
+- Реализуйте ролевое управление доступом (RBAC)
+- Регулярный аудит административного доступа
 
-### Create new mailbox
-```powershell
-New-Mailbox -Name "John Doe" -UserPrincipalName "john.doe@domain.com" -SamAccountName "john.doe" -Database "Name_DB" -Password (ConvertTo-SecureString -String "Password123!" -AsPlainText -Force)
-```
+### Логирование и аудит
+- Все скрипты включают комплексное логирование
+- Конфиденциальная информация никогда не логируется
+- Журналы аудита для всех административных действий
 
-### Enable archive for mailbox
-```powershell
-Enable-Mailbox -Identity "user@domain.com" -Archive -ArchiveDatabase "Archive_DB"
-```
+### Защита данных
+- Валидация резервных копий перед выполнением
+- Автоматические возможности отката
+- Безопасные режимы отказа с восстановлением служб
 
-### Disable archive
-```powershell
-Disable-Mailbox -Identity "user@domain.com" -Archive
-```
+## 📈 Оптимизация производительности
 
-### Set mailbox quotas
-```powershell
-Set-Mailbox -Identity "user@domain.com" -IssueWarningQuota 1GB -ProhibitSendQuota 1.2GB -ProhibitSendReceiveQuota 1.5GB
-```
+### Производительность миграции
+- Настраиваемые лимиты параллельных миграций
+- Автоматическая балансировка нагрузки между базами данных
+- Оптимизация сетевого и дискового ввода/вывода
 
-### Disable mailbox (keep in database)
-```powershell
-Disable-Mailbox -Identity "user@domain.com" -Confirm:$false
-```
+### Оптимизация базы данных
+- Автоматическое планирование дефрагментации
+- Интеллектуальные политики очистки логов
+- Проактивное управление пространством
 
-### Remove mailbox from database
-```powershell
-Remove-Mailbox -Identity "user@domain.com" -Confirm:$false
-```
+### Эффективность мониторинга
+- Кешированный сбор данных для снижения нагрузки на сервер
+- Оптимизированные паттерны запросов
+- Минимальное влияние интервалов мониторинга
 
-## Distribution Groups
+## 🤝 Участие в разработке
 
-### Create distribution group
-```powershell
-New-DistributionGroup -Name "IT Team" -SamAccountName "ITTeam" -PrimarySmtpAddress "it@domain.com"
-```
+### Стандарты кода
+- Следуйте лучшим практикам PowerShell
+- Включайте комплексную обработку ошибок
+- Документируйте все параметры и функции
+- Предоставляйте примеры использования
 
-### Add user to group
-```powershell
-Add-DistributionGroupMember -Identity "ITTeam" -Member "user@domain.com"
-```
+### Требования к тестированию
+- Тестируйте в непродакшн среде в первую очередь
+- Валидируйте с разными версиями Exchange
+- Тестирование производительности с большими наборами данных
+- Обновление документации для новых функций
 
-### Remove user from group
-```powershell
-Remove-DistributionGroupMember -Identity "ITTeam" -Member "user@domain.com"
-```
+### Процесс Pull Request
+1. Сделайте fork репозитория
+2. Создайте ветку для функции
+3. Реализуйте изменения с тестами
+4. Обновите документацию
+5. Отправьте pull request с подробным описанием
 
-### View group members
-```powershell
-Get-DistributionGroupMember -Identity "ITTeam" | ft Name, PrimarySmtpAddress
-```
+## 📋 История изменений
 
-### Create dynamic distribution group
-```powershell
-New-DynamicDistributionGroup -Name "All Users" -RecipientFilter "RecipientType -eq 'UserMailbox'"
-```
+### Версия 2.0.0 (Текущая)
+- ✅ Полное переделывание скриптов миграции
+- ✅ Улучшенный мониторинг с интеграцией Zabbix
+- ✅ Улучшенная обработка ошибок и логирование
+- ✅ Добавлена автоматизация дефрагментации баз данных
+- ✅ Комплексное обновление документации
 
-## Public Folders
+### Версия 1.5.0
+- ✅ Добавлены инструменты мониторинга миграций
+- ✅ Реализованы элементы управления параллельными миграциями
+- ✅ Улучшена функциональность очистки логов
 
-### Create public folder
-```powershell
-New-PublicFolder -Name "Company Documents" -Path "\"
-```
+### Версия 1.0.0
+- ✅ Первоначальная коллекция команд PowerShell
+- ✅ Базовые скрипты миграции
+- ✅ Простые инструменты мониторинга
 
-### Create public folder database
-```powershell
-New-PublicFolderDatabase -Name "Public Folder DB" -EdbFilePath "D:\PublicFolders\PFDB.edb"
-```
+## 🆘 Поддержка и устранение неполадок
 
-### Mail-enable public folder
-```powershell
-Enable-MailPublicFolder -Identity "\Company Documents" -ExternalEmailAddress "docs@domain.com"
-```
+### Частые проблемы
 
-### Set permissions on public folder
-```powershell
-Add-PublicFolderClientPermission -Identity "\Company Documents" -User "user@domain.com" -AccessRights Editor
-```
+1. **Ошибки отказа в доступе**
+   ```powershell
+   # Проверка разрешений Exchange
+   Get-ManagementRoleAssignment -RoleAssignee "username"
+   
+   # Добавление необходимых разрешений
+   New-ManagementRoleAssignment -Role "Mailbox Import Export" -User "username"
+   ```
 
-## Transport and Rules
+2. **Сбои миграции**
+   ```powershell
+   # Проверка статуса миграции
+   Get-MoveRequest | Get-MoveRequestStatistics | ft DisplayName, Status, PercentComplete
+   
+   # Перезапуск неудачных миграций
+   Get-MoveRequest -MoveStatus Failed | Resume-MoveRequest
+   ```
 
-### Create transport rule
-```powershell
-New-TransportRule -Name "Block External Attachments" -FromScope NotInOrganization -AttachmentHasExecutableContent $true -RejectMessageReasonText "Executable attachments are blocked"
-```
+3. **Проблемы с монтированием базы данных**
+   ```powershell
+   # Проверка состояния базы данных
+   eseutil /mh "C:\Database\DB.edb"
+   
+   # Принудительное монтирование при необходимости
+   Mount-Database -Identity "DB01" -Force
+   ```
 
-### View transport rules
-```powershell
-Get-TransportRule | ft Name, State, Priority
-```
+### Получение помощи
 
-### Disable rule
-```powershell
-Disable-TransportRule -Identity "Block External Attachments"
-```
+1. **Проверьте логи** - Все скрипты генерируют подробные логи
+2. **Изучите документацию** - Каждый скрипт имеет подробный README
+3. **Тестируйте в лабораторной среде** - Всегда тестируйте перед использованием в продакшене
+4. **Поддержка сообщества** - Отправляйте issues для получения помощи и улучшений
 
-### Create send connector
-```powershell
-New-SendConnector -Name "Internet Connector" -Usage Internet -AddressSpaces "SMTP:*;1" -SourceTransportServers "EXCH01"
-```
+## 📜 Лицензия
 
-### View message queues
-```powershell
-Get-Queue | ft Identity, Status, MessageCount, NextHopDomain
-```
+Этот проект лицензирован под лицензией MIT - смотрите файл [LICENSE](LICENSE) для деталей.
 
-## Monitoring and Statistics
+## 📞 Контакты
 
-### View mailbox statistics by size
-```powershell
-Get-MailboxStatistics | Sort-Object TotalItemSize -Descending | ft DisplayName, TotalItemSize, ItemCount
-```
+По вопросам, проблемам или предложениям:
 
-### View top 10 largest mailboxes
-```powershell
-Get-MailboxStatistics | Sort-Object TotalItemSize -Descending | Select-Object -First 10 | ft DisplayName, TotalItemSize
-```
+- **Документация**: Проверьте README файлы в каждой директории
+- **Проблемы**: Используйте GitHub issue tracker
+- **Предложения**: Отправляйте pull request с подробными описаниями
+- **Поддержка**: Изучите руководства по устранению неполадок в документации каждого скрипта
 
-### Check Exchange services status
-```powershell
-Get-Service | Where-Object {$_.Name -like "*Exchange*"} | ft Name, Status
-```
+## 🏆 Благодарности
 
-### View Exchange event logs
-```powershell
-Get-EventLog -LogName Application -Source "MSExchange*" -Newest 50 | ft TimeGenerated, EntryType, Source, Message
-```
-
-### Test mailbox connectivity
-```powershell
-Test-MapiConnectivity -Identity "user@domain.com"
-```
-
-### Test mail flow
-```powershell
-Test-MailFlow -TargetEmailAddress "test@domain.com"
-```
-
-## Backup and Restore
-
-### Create database backup
-```powershell
-New-MailboxExportRequest -Mailbox "user@domain.com" -FilePath "\\backup\exports\user.pst"
-```
-
-### Import from PST file
-```powershell
-New-MailboxImportRequest -Mailbox "user@domain.com" -FilePath "\\backup\imports\user.pst"
-```
-
-### View export/import status
-```powershell
-Get-MailboxExportRequest | ft Name, Status, PercentComplete
-Get-MailboxImportRequest | ft Name, Status, PercentComplete
-```
-
-## Certificates
-
-### View certificates
-```powershell
-Get-ExchangeCertificate | ft Thumbprint, Subject, NotAfter, Services
-```
-
-### Assign certificate to services
-```powershell
-Enable-ExchangeCertificate -Thumbprint "THUMBPRINT" -Services IIS,SMTP,POP,IMAP
-```
-
-### Create certificate request
-```powershell
-New-ExchangeCertificate -GenerateRequest -SubjectName "CN=mail.domain.com" -DomainName "mail.domain.com","autodiscover.domain.com" -Path "C:\cert_request.req"
-```
-
-## Useful Diagnostic Commands
-
-### Check database replication (for DAG)
-```powershell
-Get-MailboxDatabaseCopyStatus | ft Name, Status, CopyQueueLength, ReplayQueueLength
-```
-
-### View user activity
-```powershell
-Get-MailboxStatistics -Identity "user@domain.com" | Select-Object DisplayName, LastLogonTime, LastLogoffTime
-```
-
-### Search messages in mailboxes
-```powershell
-New-MailboxSearch -Name "SearchName" -SourceMailboxes "user@domain.com" -SearchQuery "Subject:'Important Meeting'" -TargetMailbox "admin@domain.com" -TargetFolder "SearchResults"
-```
-
-### Clear transport logs
-```powershell
-Set-TransportService -Identity "EXCH01" -MessageTrackingLogMaxAge 30.00:00:00
-```
-
-### View virtual directory configuration
-```powershell
-Get-OwaVirtualDirectory | ft Name, Server, InternalUrl, ExternalUrl
-Get-ActiveSyncVirtualDirectory | ft Name, Server, InternalUrl, ExternalUrl
-```
+- Документация Microsoft Exchange Server
+- Лучшие практики сообщества PowerShell
+- Сообщество мониторинга Zabbix
+- Администраторы Exchange Server по всему миру
 
 ---
 
-## Notes
+**⚠️ Отказ от ответственности**: Эти скрипты предоставляются "как есть" без гарантий. Всегда тестируйте в непродакшн среде перед развертыванием в продакшн системах. Создавайте резервные копии перед запуском любых операций обслуживания.
 
-- Replace `dc.example.com` with your domain controller
-- Replace `Name_DB` with your database name
-- Replace `domain.com` with your domain
-- Always test commands in a test environment before applying in production
-- Regularly create backups before performing critical operations
-
-## Connecting to Exchange Management Shell
-
-```powershell
-Add-PSSnapin Microsoft.Exchange.Management.PowerShell.SnapIn
-```
-
-Or use Exchange Management Shell directly from the Start menu.
+**📚 Быстрые ссылки**:
+- [Команды PowerShell](powershell/README.md)
+- [Мониторинг баз данных](scripts/db/README.md)
+- [Инструменты миграции](scripts/migration/README.md)
+- [Руководство по дефрагментации](scripts/defrag/README.md)
+- [Управление логами](scripts/logs/README.md)
