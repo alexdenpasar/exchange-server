@@ -1,4 +1,4 @@
-# Exchange Server 2016 - Scripts and PowerShell Commands Repository
+# Exchange Server 2016/2019 - Scripts and PowerShell Commands Repository
 
 **Languages / Языки:**
 - [🇷🇺 Русский](README.ru.md)
